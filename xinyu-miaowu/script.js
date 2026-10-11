@@ -168,7 +168,7 @@ const videoOptimizer = {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     // 视频进入视口时开始预加载
-                    if (video.readyState < 2) {
+                    if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) {
                         video.load();
                     }
                 } else if (!performance.isHighEnd) {
@@ -305,9 +305,8 @@ const videoOptimizer = {
             
             if (isSceneActive) {
                 // 检查视频状态
-                if (video.paused || video.ended || video.readyState < 2) {
-                    console.log(`🔧 检测到视频问题，重启: ${video.src.split('/').pop()}`);
-                    this.restartVideoPlayback(video);
+                if (video.paused && video.readyState >= 2) {
+                    video.play().catch(() => {});
                 }
                 
                 // 检查播放时间异常
@@ -334,12 +333,10 @@ const videoOptimizer = {
         
         // 启动新视频
         if (toVideo) {
+            toVideo.preload = 'auto';
             toVideo.currentTime = 0;
-            if (toVideo.readyState < 2) toVideo.load();
-            toVideo.play().catch(() => {
-                toVideo.load();
-                setTimeout(() => toVideo.play().catch(() => {}), 150);
-            });
+            if (toVideo.networkState === HTMLMediaElement.NETWORK_EMPTY) toVideo.load();
+            toVideo.play().catch(() => {});
         }
     },
     

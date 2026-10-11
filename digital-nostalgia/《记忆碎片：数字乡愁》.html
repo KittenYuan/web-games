@@ -36,6 +36,7 @@
             position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
         }
+        #mainMenuScene:not(.media-ready) .main-menu-content { visibility: hidden; }
         .main-title {
             position: absolute;
             top: 40px;
@@ -2465,6 +2466,17 @@
         <button onclick="debugTributeQuote()">调试金句显示</button>
     </div>
     <script>
+    const openingVideo = document.getElementById('menuBackgroundVideo');
+    const showOpening = () => document.getElementById('mainMenuScene').classList.add('media-ready');
+    openingVideo.addEventListener('playing', showOpening, { once: true });
+    openingVideo.addEventListener('error', showOpening, { once: true });
+    if (openingVideo.readyState >= 2) showOpening();
+    openingVideo.play().catch(() => {
+        openingVideo.addEventListener('loadeddata', showOpening, { once: true });
+    });
+    setTimeout(showOpening, 10000);
+    </script>
+    <script>
     // 开发者模式状态
     const devModeState = {
         initialized: false,
@@ -3872,15 +3884,13 @@
     
     // 开始游戏
     document.getElementById('startGameBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        
         showSceneFade('序幕：生日快乐', '记忆焚化师的夜班');
         setTimeout(() => {
             startPrologue();
         }, 1500);
+        if (audioManager && audioManager.isInitialized) {
+            audioManager.playClick();
+        }
     };
     // 完成界面按钮
     document.getElementById('restartBtn').onclick = function() {
@@ -4013,6 +4023,7 @@
         }
     }
 
+    function checkFragmentCollection() {
         // 如果正在收集中，直接返回
         if (gameState.isCollecting) return;
         
@@ -5332,7 +5343,6 @@
                 fragElement.innerHTML = fragmentImages[index];
             }
             
-            fragElement.innerHTML = fragmentImages[index];
             const fragmentImage = fragElement.querySelector('img');
             if (fragmentImage) {
                 fragmentImage.loading = 'eager';
@@ -5383,9 +5393,6 @@
         
         // 重新添加事件监听器
         document.getElementById('computer').addEventListener('click', handleComputerClick);
-        document.getElementById('catalog').addEventListener('click', handleCatalogClick);
-        document.getElementById('photoAlbum').addEventListener('click', handlePhotoAlbumClick);
-        document.getElementById('memoryBook').addEventListener('click', handleMemoryBookClick);
         document.getElementById('qiqi').addEventListener('click', handleQiqiClick);
         
         // 重新添加NPC点击事件
@@ -5418,16 +5425,12 @@
             // 隐藏所有互动元素
             document.getElementById('npc').style.display = 'none';
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
             document.getElementById('qiqi').style.display = 'none';
         } else if (gameState.currentScene === 2) {
             // 场景2：消费幻境 - 只有小意和奇奇
             // 隐藏其他互动元素
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
             
             // 强制显示小意NPC，确保一开始就出现
@@ -5471,8 +5474,6 @@
             // 场景3：遗忘回廊 - 只显示碎片，不显示NPC和记忆之书
             // 隐藏其他互动元素
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('qiqi').style.display = 'none';
             document.getElementById('npc').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
@@ -6794,10 +6795,8 @@
         // 序幕剧情中的回车键处理
         if (document.getElementById('prologueScene').classList.contains('active')) {
             if (e.key === 'Enter') {
-                const currentStep = prologueData.steps[prologueData.currentStep];
-                if (currentStep.choices.length === 1) {
-                    handlePrologueChoice(currentStep.choices[0].action);
-                }
+                const continueBtn = document.getElementById('continueBtn');
+                if (continueBtn.style.display !== 'none') continueBtn.click();
             }
         }
         

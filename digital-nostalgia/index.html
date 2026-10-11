@@ -36,6 +36,7 @@
             position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
         }
+        #mainMenuScene:not(.media-ready) .main-menu-content { visibility: hidden; }
         .main-title {
             position: absolute;
             top: 40px;
@@ -2179,7 +2180,7 @@
     <!-- 主菜单场景 -->
     <div class="scene main-menu-scene active" id="mainMenuScene">
         <div class="main-menu-bg">
-            <video src="素材包/背景动态.mp4" autoplay loop muted playsinline></video>
+            <video id="menuBackgroundVideo" src="素材包/背景动态.mp4" autoplay loop muted playsinline preload="auto"></video>
         </div>
         <div class="main-menu-content">
             <div class="main-title">记忆碎片：数字乡愁</div>
@@ -2195,7 +2196,7 @@
         
         <!-- 角色立绘区域 -->
         <div class="character-area">
-            <img src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="characterSprite">
+            <img loading="eager" fetchpriority="high" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="characterSprite">
         </div>
         
         <!-- 对话框区域 -->
@@ -2237,7 +2238,7 @@
         <div class="game-content">
             <div class="game-world" id="gameWorld">
                 <div class="scene-description">效率中枢：数据处理的神经中枢，冰冷的金属架构中流淌着数字的血液，每一个节点都承载着时代的记忆碎片。</div>
-                <div class="player" id="player"><img src="素材包/像素风主角已抠.png" alt="主角"></div>
+                <div class="player" id="player"><img src="素材包/像素风主角已抠.png" id="playerPortrait" alt="主角" loading="eager" fetchpriority="high" decoding="async"></div>
                 
                 <!-- NPC和互动元素 -->
                 <div class="npc" id="npc" style="display: none;">
@@ -2261,15 +2262,15 @@
                 </div>
                 
                 <div class="interactive-object" id="qiqi" style="display: none;">
-                    <div class="object-icon"><img src="素材包/小狗奇.png" alt="奇奇" style="width: 40px; height: 40px; object-fit: contain;"></div>
+                    <div class="object-icon"><img loading="lazy" decoding="async" src="素材包/小狗奇.png" alt="奇奇" style="width: 40px; height: 40px; object-fit: contain;"></div>
                     <div class="object-label">奇奇</div>
                 </div>
                 
-                <div class="memory-fragment fragment-1" data-id="1"><img src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-2" data-id="2"><img src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-3" data-id="3"><img src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-4" data-id="4"><img src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-5" data-id="5"><img src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-1" data-id="1"><img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-2" data-id="2"><img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-3" data-id="3"><img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-4" data-id="4"><img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-5" data-id="5"><img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;"></div>
 
                 <button class="scene-switch-btn" id="sceneSwitchBtn">前往消费幻境</button>
                 <button class="scene-switch-btn" id="sceneSwitchBtn3" style="display:none; position: absolute; bottom: 70px; right: 20px;">前往遗忘回廊</button>
@@ -2363,7 +2364,7 @@
         
         <!-- 角色立绘区域 -->
         <div class="character-area">
-            <img src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="epilogueCharacterSprite">
+            <img loading="lazy" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="epilogueCharacterSprite">
         </div>
         
         <!-- 对话框区域 -->
@@ -2464,6 +2465,17 @@
         <button onclick="debugScene2()">调试场景2</button>
         <button onclick="debugTributeQuote()">调试金句显示</button>
     </div>
+    <script>
+    const openingVideo = document.getElementById('menuBackgroundVideo');
+    const showOpening = () => document.getElementById('mainMenuScene').classList.add('media-ready');
+    openingVideo.addEventListener('playing', showOpening, { once: true });
+    openingVideo.addEventListener('error', showOpening, { once: true });
+    if (openingVideo.readyState >= 2) showOpening();
+    openingVideo.play().catch(() => {
+        openingVideo.addEventListener('loadeddata', showOpening, { once: true });
+    });
+    setTimeout(showOpening, 10000);
+    </script>
     <script>
     // 开发者模式状态
     const devModeState = {
@@ -3872,15 +3884,13 @@
     
     // 开始游戏
     document.getElementById('startGameBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        
         showSceneFade('序幕：生日快乐', '记忆焚化师的夜班');
         setTimeout(() => {
             startPrologue();
         }, 1500);
+        if (audioManager && audioManager.isInitialized) {
+            audioManager.playClick();
+        }
     };
     // 完成界面按钮
     document.getElementById('restartBtn').onclick = function() {
@@ -3966,68 +3976,53 @@
     }
     // 键盘控制
     function handleKeyPress(e) {
-        // 检查并修复玩家移动状态
-        if (!checkAndFixPlayerMovement()) {
-            return;
-        }
-        
-        // 如果有弹窗显示，禁止移动
-        if (gameState.currentModal !== null) {
-            console.log('弹窗显示中，禁止移动');
-            return;
-        }
-        
-        const player = document.getElementById('player');
-        const world = document.getElementById('gameWorld');
-        
-        // 获取玩家当前位置
-        let top = parseFloat(player.style.top);
-        let left = parseFloat(player.style.left);
-        
-        const speed = 10;
-        let moved = false;
-        
         const key = (e.key || '').toLowerCase();
-        const isUp = e.key === 'ArrowUp' || key === 'w';
-        const isDown = e.key === 'ArrowDown' || key === 's';
-        const isLeft = e.key === 'ArrowLeft' || key === 'a';
-        const isRight = e.key === 'ArrowRight' || key === 'd';
+        const code = (e.code || '').toLowerCase();
+        const isUp = e.key === 'ArrowUp' || key === 'w' || code === 'keyw';
+        const isDown = e.key === 'ArrowDown' || key === 's' || code === 'keys';
+        const isLeft = e.key === 'ArrowLeft' || key === 'a' || code === 'keya';
+        const isRight = e.key === 'ArrowRight' || key === 'd' || code === 'keyd';
         if (!isUp && !isDown && !isLeft && !isRight) return;
 
         const gameScene = document.getElementById('gameScene');
         if (!gameScene || !gameScene.classList.contains('active')) return;
-
         e.preventDefault();
-        switch(true) {
-            case isUp: 
-                top = Math.max(0, top - speed); 
-                moved = true;
-                break;
-            case isDown: 
-                top = Math.min(world.clientHeight - player.clientHeight, top + speed); 
-                moved = true;
-                break;
-            case isLeft: 
-                left = Math.max(0, left - speed); 
-                moved = true;
-                break;
-            case isRight: 
-                left = Math.min(world.clientWidth - player.clientWidth, left + speed); 
-                moved = true;
-                break;
-            default: return;
+
+        const activeElement = document.activeElement;
+        const isTyping = activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName);
+        if (isTyping || document.querySelector('.game-modal-bg[style*="display: flex"], .dialog-modal-bg[style*="display: flex"], .fragment-modal-bg[style*="display: flex"]')) return;
+
+        const player = document.getElementById('player');
+        const world = document.getElementById('gameWorld');
+        if (!player || !world || world.clientWidth === 0 || world.clientHeight === 0) return;
+
+        let top = Number(player.dataset.top);
+        let left = Number(player.dataset.left);
+        if (!Number.isFinite(top) || !Number.isFinite(left)) {
+            centerPlayer();
+            top = Number(player.dataset.top);
+            left = Number(player.dataset.left);
         }
-        
-        if (moved) {
-            console.log('移动玩家到:', { top, left });
-        player.style.top = top + 'px';
-        player.style.left = left + 'px';
-        player.style.transform = 'scale(0.9)';
-        setTimeout(() => { player.style.transform = 'scale(1)'; }, 100);
+
+        const speed = e.repeat ? 6 : 12;
+        if (isUp) top = Math.max(0, top - speed);
+        if (isDown) top = Math.min(Math.max(0, world.clientHeight - player.offsetHeight), top + speed);
+        if (isLeft) left = Math.max(0, left - speed);
+        if (isRight) left = Math.min(Math.max(0, world.clientWidth - player.offsetWidth), left + speed);
+
+        player.dataset.top = String(top);
+        player.dataset.left = String(left);
+        player.style.top = `${top}px`;
+        player.style.left = `${left}px`;
         checkFragmentCollection();
+    }
+    function handlePlayerKeyUp(e) {
+        const code = (e.code || '').toLowerCase();
+        if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'keyw', 'keys', 'keya', 'keyd'].includes(code)) {
+            e.preventDefault();
         }
     }
-    // 检查收集碎片
+
     function checkFragmentCollection() {
         // 如果正在收集中，直接返回
         if (gameState.isCollecting) return;
@@ -4127,23 +4122,23 @@
                 
                 // 显示对应的图片
                 const fragmentImages = gameState.currentScene === 1 ? [
-                    '<img src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
                 ] : gameState.currentScene === 2 ? [
-                    '<img src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
                 ] : gameState.currentScene === 3 ? [
-                    '<img src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
                 ] : [];
                 slots[i].innerHTML = fragmentImages[fragmentIndex];
                 
@@ -4210,29 +4205,29 @@
         let fragmentImage = '';
         if (gameState.currentScene === 1) {
             const scene1Images = [
-                '<img src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/寻呼机.png" alt="寻呼机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/传真机.png" alt="传真机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/CD光盘.png" alt="CD光盘" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene1Images[fragmentId-1];
         } else if (gameState.currentScene === 2) {
             const scene2Images = [
-                '<img src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/数码相机.png" alt="数码相机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene2Images[fragmentId-1];
         } else if (gameState.currentScene === 3) {
             const scene3Images = [
-                '<img src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene3Images[fragmentId-1];
         }
@@ -4429,7 +4424,7 @@
             const title = npc.querySelector('.npc-title');
             
             if (avatar) {
-                avatar.innerHTML = '<img src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
+                avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
             }
             if (name) {
                 name.textContent = gameState.npcs.scene2.name;
@@ -4497,7 +4492,12 @@
         // 初始化音效控制
         initializeAudioControls();
         // 设置键盘事件监听器
-        document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener('keydown', handleKeyPress, { capture: true });
+        document.addEventListener('keyup', handlePlayerKeyUp, { capture: true });
+        const menuBackgroundVideo = document.getElementById('menuBackgroundVideo');
+        if (menuBackgroundVideo) {
+            menuBackgroundVideo.play().catch(() => {});
+        }
         
         // 确保开发者按钮在所有场景中都可见
         setTimeout(() => {
@@ -5316,33 +5316,39 @@
             // 设置碎片内容
             if (gameState.currentScene === 1) {
                 const fragmentImages = [
-                    '<img src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             } else if (gameState.currentScene === 2) {
                 const fragmentImages = [
-                    '<img src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             } else if (gameState.currentScene === 3) {
                 const fragmentImages = [
-                    '<img src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             }
             
+            const fragmentImage = fragElement.querySelector('img');
+            if (fragmentImage) {
+                fragmentImage.loading = 'eager';
+                fragmentImage.fetchPriority = 'high';
+                fragmentImage.decoding = 'async';
+            }
             gameWorld.appendChild(fragElement);
         });
     }
@@ -5387,9 +5393,6 @@
         
         // 重新添加事件监听器
         document.getElementById('computer').addEventListener('click', handleComputerClick);
-        document.getElementById('catalog').addEventListener('click', handleCatalogClick);
-        document.getElementById('photoAlbum').addEventListener('click', handlePhotoAlbumClick);
-        document.getElementById('memoryBook').addEventListener('click', handleMemoryBookClick);
         document.getElementById('qiqi').addEventListener('click', handleQiqiClick);
         
         // 重新添加NPC点击事件
@@ -5422,16 +5425,12 @@
             // 隐藏所有互动元素
             document.getElementById('npc').style.display = 'none';
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
             document.getElementById('qiqi').style.display = 'none';
         } else if (gameState.currentScene === 2) {
             // 场景2：消费幻境 - 只有小意和奇奇
             // 隐藏其他互动元素
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
             
             // 强制显示小意NPC，确保一开始就出现
@@ -5453,7 +5452,7 @@
                 const title = npc.querySelector('.npc-title');
                 
                 if (avatar) {
-                    avatar.innerHTML = '<img src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
+                    avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
                 }
                 if (name) {
                     name.textContent = gameState.npcs.scene2.name;
@@ -5475,8 +5474,6 @@
             // 场景3：遗忘回廊 - 只显示碎片，不显示NPC和记忆之书
             // 隐藏其他互动元素
             document.getElementById('computer').style.display = 'none';
-            document.getElementById('catalog').style.display = 'none';
-            document.getElementById('photoAlbum').style.display = 'none';
             document.getElementById('qiqi').style.display = 'none';
             document.getElementById('npc').style.display = 'none';
             document.getElementById('memoryBook').style.display = 'none';
@@ -5767,7 +5764,7 @@
         // 根据场景设置不同的默认头像
         let defaultAvatar = '👨‍💻';
         if (gameState.currentScene === 2) {
-            defaultAvatar = '<img src="素材包/小艺.png" alt="小意" style="width: 48px; height: 48px; object-fit: contain;">'; // 小意使用小艺.png图片
+            defaultAvatar = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 48px; height: 48px; object-fit: contain;">'; // 小意使用小艺.png图片
         } else if (gameState.currentScene === 3) {
             defaultAvatar = '🧙‍♂️'; // 时光老人使用神秘老者头像
         }
@@ -6021,10 +6018,13 @@
     function centerPlayer() {
         const player = document.getElementById('player');
         const world = document.getElementById('gameWorld');
-        const top = Math.max(0, (world.clientHeight - player.clientHeight) / 2);
-        const left = Math.max(0, (world.clientWidth - player.clientWidth) / 2);
-        player.style.top = top + 'px';
-        player.style.left = left + 'px';
+        if (!player || !world) return;
+        const top = Math.max(0, (world.clientHeight - player.offsetHeight) / 2);
+        const left = Math.max(0, (world.clientWidth - player.offsetWidth) / 2);
+        player.dataset.top = String(top);
+        player.dataset.left = String(left);
+        player.style.top = `${top}px`;
+        player.style.left = `${left}px`;
         player.style.transform = 'none';
         player.style.position = 'absolute';
         console.log('玩家位置已重置:', { top, left });
@@ -6795,10 +6795,8 @@
         // 序幕剧情中的回车键处理
         if (document.getElementById('prologueScene').classList.contains('active')) {
             if (e.key === 'Enter') {
-                const currentStep = prologueData.steps[prologueData.currentStep];
-                if (currentStep.choices.length === 1) {
-                    handlePrologueChoice(currentStep.choices[0].action);
-                }
+                const continueBtn = document.getElementById('continueBtn');
+                if (continueBtn.style.display !== 'none') continueBtn.click();
             }
         }
         

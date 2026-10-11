@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>心语喵屋 - Whispers & Whiskers Retreat</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        #scene-0:not(.media-ready) .title-area,
+        #scene-0:not(.media-ready) .start-button-area { visibility: hidden; }
+    </style>
 </head>
 <body>
     <div class="game-container">
@@ -34,7 +38,7 @@
         <!-- 场景1：进入喵屋 -->
         <div class="scene" id="scene-1">
             <!-- 视频背景 -->
-            <video class="video-background" id="scene1-video" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="video-background" id="scene1-video" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/喵屋内部.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
@@ -79,7 +83,7 @@
         <!-- 场景2：倾听与引导 -->
         <div class="scene" id="scene-2">
             <!-- 视频背景 -->
-            <video class="video-background" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="video-background" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/喵屋内部.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
@@ -113,19 +117,19 @@
         <div class="scene" id="scene-3">
             <!-- 动态视频背景 - 根据情绪分支显示不同视频 -->
             <!-- 疲惫/低落 - 神秘花园 -->
-            <video class="exploration-video hidden" id="exploration-tired" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="exploration-video hidden" id="exploration-tired" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/神秘花园动态.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
             
             <!-- 紧张 - 清晨林间 -->
-            <video class="exploration-video hidden" id="exploration-nervous" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="exploration-video hidden" id="exploration-nervous" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/清晨林间.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
             
             <!-- 思念 - 星空岛屿 -->
-            <video class="exploration-video hidden" id="exploration-missing" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="exploration-video hidden" id="exploration-missing" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/星空岛屿.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
@@ -213,7 +217,7 @@
         <!-- 场景4：领悟与馈赠 -->
         <div class="scene" id="scene-4">
             <!-- 视频背景 -->
-            <video class="video-background" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="video-background" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/喵屋内部.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
@@ -257,7 +261,7 @@
         <!-- 场景5：保存与告别 -->
         <div class="scene" id="scene-5">
             <!-- 视频背景 -->
-            <video class="video-background" id="scene5-video" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+            <video class="video-background" id="scene5-video" muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
                 <source src="素材包/喵屋内部.mp4" type="video/mp4">
                 您的浏览器不支持视频播放。
             </video>
@@ -367,6 +371,18 @@
         <source src="purr.mp3" type="audio/mpeg">
     </audio>
 
+    <script>
+        const openingVideo = document.getElementById('intro-video');
+        const openingScene = document.getElementById('scene-0');
+        const showOpening = () => openingScene.classList.add('media-ready');
+        openingVideo.addEventListener('playing', showOpening, { once: true });
+        openingVideo.addEventListener('error', showOpening, { once: true });
+        if (openingVideo.readyState >= 2) showOpening();
+        openingVideo.play().catch(() => {
+            openingVideo.addEventListener('loadeddata', showOpening, { once: true });
+        });
+        setTimeout(showOpening, 10000);
+    </script>
     <script src="script.js"></script>
 </body>
 </html> 
