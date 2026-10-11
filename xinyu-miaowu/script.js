@@ -109,10 +109,10 @@ const videoOptimizer = {
         video.controls = false;
         video.disablePictureInPicture = true;
         
-        // 只预加载当前可见场景的视频，避免开场时同时拉取全部素材导致卡顿
+        // 如果场景容器已经在视口附近，尽快启动首屏视频读取。
         const scene = video.closest('.scene');
         const isActiveScene = scene && scene.classList.contains('active');
-        video.preload = isActiveScene ? 'metadata' : 'none';
+        video.preload = isActiveScene ? 'auto' : 'none';
         
         // 播放速率优化
         video.playbackRate = 1.0;
