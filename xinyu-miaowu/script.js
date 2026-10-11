@@ -335,11 +335,10 @@ const videoOptimizer = {
         // 启动新视频
         if (toVideo) {
             toVideo.currentTime = 0;
-            toVideo.play().catch(e => {
-                console.log('切换播放失败，尝试重新加载:', e);
-                setTimeout(() => {
-                    this.restartVideoPlayback(toVideo);
-                }, 500);
+            if (toVideo.readyState < 2) toVideo.load();
+            toVideo.play().catch(() => {
+                toVideo.load();
+                setTimeout(() => toVideo.play().catch(() => {}), 150);
             });
         }
     },
@@ -1185,12 +1184,11 @@ const sceneManager = {
         console.log(`准备切换到场景 ${sceneId}`);
         audioManager.playClick();
         
-        // 延长加载时间，确保温馨话语能够完整轮播（每3秒一条，至少播放3-4条）
-        let loadingDuration = 9000; // 默认9秒，让用户能看到3条完整的温馨话语
-        if (sceneId === 1) loadingDuration = 10000; // 首次进入喵屋，10秒让用户感受温馨
-        if (sceneId === 3) loadingDuration = 12000; // 探索场景12秒，让用户充分准备
-        if (sceneId === 4) loadingDuration = 10000; // 探索完毕后对话，10秒回味
-        if (sceneId === 5) loadingDuration = 11000; // 最终场景11秒，给用户期待感
+        let loadingDuration = 1200;
+        if (sceneId === 1) loadingDuration = 1500;
+        if (sceneId === 3) loadingDuration = 1800;
+        if (sceneId === 4) loadingDuration = 1500;
+        if (sceneId === 5) loadingDuration = 1500;
         
         // 显示加载页面
         loadingManager.show(sceneId, loadingDuration);

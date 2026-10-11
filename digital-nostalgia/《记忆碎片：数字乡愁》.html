@@ -2179,7 +2179,7 @@
     <!-- 主菜单场景 -->
     <div class="scene main-menu-scene active" id="mainMenuScene">
         <div class="main-menu-bg">
-            <video id="menuBackgroundVideo" data-src="素材包/背景动态.mp4" autoplay loop muted playsinline preload="none" poster="素材包/主菜单背景.png"></video>
+            <video id="menuBackgroundVideo" src="素材包/背景动态.mp4" autoplay loop muted playsinline preload="auto"></video>
         </div>
         <div class="main-menu-content">
             <div class="main-title">记忆碎片：数字乡愁</div>
@@ -2195,7 +2195,7 @@
         
         <!-- 角色立绘区域 -->
         <div class="character-area">
-            <img loading="lazy" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="characterSprite" loading="eager" fetchpriority="high" decoding="async">
+            <img loading="eager" fetchpriority="high" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="characterSprite">
         </div>
         
         <!-- 对话框区域 -->
@@ -3979,33 +3979,40 @@
         e.preventDefault();
 
         const activeElement = document.activeElement;
-        if (activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName)) return;
-        if (gameState.currentModal !== null) return;
+        const isTyping = activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName);
+        if (isTyping || document.querySelector('.game-modal-bg[style*="display: flex"], .dialog-modal-bg[style*="display: flex"], .fragment-modal-bg[style*="display: flex"]')) return;
 
         const player = document.getElementById('player');
         const world = document.getElementById('gameWorld');
-        if (!player || !world) return;
+        if (!player || !world || world.clientWidth === 0 || world.clientHeight === 0) return;
 
-        let top = parseFloat(player.style.top);
-        let left = parseFloat(player.style.left);
+        let top = Number(player.dataset.top);
+        let left = Number(player.dataset.left);
         if (!Number.isFinite(top) || !Number.isFinite(left)) {
             centerPlayer();
-            top = parseFloat(player.style.top);
-            left = parseFloat(player.style.left);
+            top = Number(player.dataset.top);
+            left = Number(player.dataset.left);
         }
 
-        const speed = 10;
+        const speed = e.repeat ? 6 : 12;
         if (isUp) top = Math.max(0, top - speed);
         if (isDown) top = Math.min(Math.max(0, world.clientHeight - player.offsetHeight), top + speed);
         if (isLeft) left = Math.max(0, left - speed);
         if (isRight) left = Math.min(Math.max(0, world.clientWidth - player.offsetWidth), left + speed);
 
+        player.dataset.top = String(top);
+        player.dataset.left = String(left);
         player.style.top = `${top}px`;
         player.style.left = `${left}px`;
         checkFragmentCollection();
     }
-    // 检查收集碎片
-    function checkFragmentCollection() {
+    function handlePlayerKeyUp(e) {
+        const code = (e.code || '').toLowerCase();
+        if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'keyw', 'keys', 'keya', 'keyd'].includes(code)) {
+            e.preventDefault();
+        }
+    }
+
         // 如果正在收集中，直接返回
         if (gameState.isCollecting) return;
         
@@ -4474,16 +4481,11 @@
         // 初始化音效控制
         initializeAudioControls();
         // 设置键盘事件监听器
-        document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener('keydown', handleKeyPress, { capture: true });
+        document.addEventListener('keyup', handlePlayerKeyUp, { capture: true });
         const menuBackgroundVideo = document.getElementById('menuBackgroundVideo');
         if (menuBackgroundVideo) {
-            const loadMenuVideo = () => {
-                menuBackgroundVideo.src = menuBackgroundVideo.dataset.src;
-                menuBackgroundVideo.load();
-                menuBackgroundVideo.play().catch(() => {});
-            };
-            if ('requestIdleCallback' in window) requestIdleCallback(loadMenuVideo, { timeout: 1500 });
-            else setTimeout(loadMenuVideo, 800);
+            menuBackgroundVideo.play().catch(() => {});
         }
         
         // 确保开发者按钮在所有场景中都可见
@@ -5330,6 +5332,13 @@
                 fragElement.innerHTML = fragmentImages[index];
             }
             
+            fragElement.innerHTML = fragmentImages[index];
+            const fragmentImage = fragElement.querySelector('img');
+            if (fragmentImage) {
+                fragmentImage.loading = 'eager';
+                fragmentImage.fetchPriority = 'high';
+                fragmentImage.decoding = 'async';
+            }
             gameWorld.appendChild(fragElement);
         });
     }
@@ -6011,6 +6020,8 @@
         if (!player || !world) return;
         const top = Math.max(0, (world.clientHeight - player.offsetHeight) / 2);
         const left = Math.max(0, (world.clientWidth - player.offsetWidth) / 2);
+        player.dataset.top = String(top);
+        player.dataset.left = String(left);
         player.style.top = `${top}px`;
         player.style.left = `${left}px`;
         player.style.transform = 'none';
