@@ -1,0 +1,2400 @@
+/* 高性能视频优化 + 强制可见性修复版本 */
+
+/* 性能优化全局设置 + 基础重置 */
+* {
+    /* 基础重置 */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    
+    /* 硬件加速 */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    
+    /* 减少重绘重排 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+}
+
+/* 视频专用性能优化 */
+video.video-background,
+video.exploration-video {
+    /* 强制GPU加速 */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    
+    /* 优化渲染 */
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* 减少重绘 */
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    
+    /* 避免卡顿 */
+    image-rendering: optimizeSpeed;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* 内存优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* 防止视频闪烁 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    
+    /* 合成层优化 */
+    isolation: isolate;
+    contain: layout style paint;
+}
+
+/* 低端设备优化 */
+@media (max-width: 768px), (max-height: 600px) {
+    video.video-background,
+    video.exploration-video {
+        /* 降低渲染质量以提高性能 */
+        image-rendering: pixelated;
+        filter: none !important;
+        opacity: 0.95;
+    }
+}
+
+/* 高刷新率设备优化 */
+@media (min-resolution: 120dpi) {
+    video.video-background,
+    video.exploration-video {
+        /* 高DPI设备的渲染优化 */
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: optimize-contrast;
+    }
+}
+
+:root {
+    --primary-color: #FFB6C1;
+    --secondary-color: #E6E6FA;
+    --accent-color: #FFD700;
+    --text-color: #2F2F2F;
+    --bg-gradient: linear-gradient(135deg, #FFE5E5 0%, #E6E6FA 50%, #F0F8FF 100%);
+    --font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+}
+
+/* 全局重置已合并到上面的性能优化CSS中 */
+
+body {
+    font-family: var(--font-family);
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    overflow: auto;
+    user-select: none;
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 游戏容器 - 调整为16:9比例，居中显示 */
+.game-container {
+    width: 80vw;
+    max-width: 1200px;
+    height: 45vw;
+    max-height: 675px;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 场景样式 - 强制可见性 */
+.scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none !important;
+    pointer-events: none;
+}
+
+.scene.active {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: all !important;
+    visibility: visible !important;
+}
+
+/* 背景样式 */
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-gradient);
+    z-index: 1;
+}
+
+/* 内容容器 */
+.content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+/* 启动场景特殊样式 */
+#scene-0 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2b1a24 0%, #4a2c3a 45%, #1b2838 100%);
+}
+
+/* 视频背景样式 */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    pointer-events: none;
+    /* 优化视频性能 */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* 确保视频硬件加速 */
+    will-change: auto;
+}
+
+/* 视频遮罩层 */
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+/* 视觉小说角色容器 */
+.vn-character-container {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 480px;
+    height: 600px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cat-character {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: all 0.5s ease;
+}
+
+.cat-character.hidden {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.cat-character.reading {
+    animation: gentle-bob 3s ease-in-out infinite;
+}
+
+.cat-character.talking {
+    animation: talking-bounce 0.8s ease-in-out infinite;
+}
+
+@keyframes gentle-bob {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes talking-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* 视觉小说对话系统 */
+.vn-dialogue-container {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    right: 20px;
+    height: auto;
+    background: none;
+    z-index: 4;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.vn-name-box {
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 18px;
+    font-weight: bold;
+    font-size: 1rem;
+    width: fit-content;
+    margin-bottom: 8px;
+    border: none;
+}
+
+.vn-text-box {
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid var(--primary-color);
+    border-radius: 18px;
+    padding: 16px 20px;
+    min-height: 60px;
+    backdrop-filter: none;
+}
+
+.vn-text-content {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    text-align: left;
+    margin: 0;
+}
+
+.vn-choices-container {
+    position: absolute;
+    top: -220px;
+    right: 20px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.vn-choices-container.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.vn-choice-btn {
+    background: rgba(230, 230, 250, 0.95);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.vn-choice-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.vn-continue-hint {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    animation: gentle-glow 2s ease-in-out infinite;
+    cursor: pointer;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 12px;
+    border-radius: 15px;
+    backdrop-filter: blur(3px);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 标题区域 - 在视频中树屋上方 */
+.title-area {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    width: 100%;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+/* 开始按钮区域 - 在正下方 */
+.start-button-area {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+.game-title {
+    font-size: 3.8rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-shadow: 
+        1px 1px 0px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 182, 193, 0.8),
+        0 0 40px rgba(255, 182, 193, 0.4);
+    animation: title-glow 3s ease-in-out infinite;
+    font-weight: bold;
+    letter-spacing: 3px;
+    filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.4));
+}
+
+@keyframes title-glow {
+    0%, 100% { 
+        text-shadow: 
+            1px 1px 0px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(255, 182, 193, 0.8),
+            0 0 40px rgba(255, 182, 193, 0.4);
+        filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.4));
+    }
+    50% { 
+        text-shadow: 
+            1px 1px 0px rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(255, 182, 193, 1),
+            0 0 60px rgba(255, 182, 193, 0.6);
+        filter: drop-shadow(0 0 25px rgba(255, 182, 193, 0.6));
+    }
+}
+
+.subtitle {
+    font-size: 1.4rem;
+    color: #E6E6FA;
+    margin-bottom: 25px;
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.9),
+        0 0 15px rgba(230, 230, 250, 0.8);
+    font-weight: 500;
+    letter-spacing: 1px;
+    opacity: 0.95;
+}
+
+.welcome-text {
+    font-size: 1.3rem;
+    color: #F0F8FF;
+    margin-bottom: 0;
+    opacity: 0.9;
+    max-width: 650px;
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(240, 248, 255, 0.6);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+.start-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: var(--text-color);
+    font-size: 1.3rem;
+    padding: 18px 45px;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(255, 182, 193, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 1px;
+}
+
+.start-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.start-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.6),
+        0 0 40px rgba(255, 182, 193, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.start-button:hover::before {
+    left: 100%;
+}
+
+.start-hint {
+    font-size: 1.1rem;
+    color: #FFD700;
+    margin-top: 15px;
+    opacity: 0.85;
+    animation: gentle-glow 2.5s ease-in-out infinite;
+    text-shadow: 
+        2px 2px 0px rgba(0, 0, 0, 0.8),
+        0 0 15px rgba(255, 215, 0, 0.8);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+@keyframes gentle-glow {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+/* 猫导师样式 - 强制可见性 */
+.cat-mentor {
+    position: absolute !important;
+    top: 25% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 150px !important;
+    height: 150px !important;
+    z-index: 100 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.cat-mentor.mini {
+    width: 100px !important;
+    height: 100px !important;
+    top: 15% !important;
+    left: 15% !important;
+    transform: none !important;
+}
+
+.cat-sprite {
+    width: 100% !important;
+    height: 100% !important;
+    background: #FFB6C1 !important;
+    border: 4px solid #fff !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #2F2F2F !important;
+    font-weight: bold !important;
+    font-size: 2rem !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    z-index: 101 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* 对话框样式 - 强制可见性 */
+.dialogue-box {
+    position: absolute !important;
+    bottom: 10% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 700px !important;
+    background: #ffffff !important;
+    border: 4px solid #FFB6C1 !important;
+    border-radius: 20px !important;
+    padding: 25px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+    z-index: 150 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.dialogue-text {
+    font-size: 1.2rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 20px !important;
+    color: var(--text-color) !important;
+    text-align: center !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* 选择按钮样式 - 强制可见性 */
+.choices {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    visibility: visible !important;
+}
+
+.choice-btn {
+    background: linear-gradient(45deg, #E6E6FA, #FFB6C1) !important;
+    color: #2F2F2F !important;
+    font-size: 1.1rem !important;
+    padding: 15px 25px !important;
+    border: 2px solid #FFB6C1 !important;
+    border-radius: 15px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-align: left !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    margin: 8px 0 !important;
+    display: block !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 151 !important;
+}
+
+.choice-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3) !important;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color)) !important;
+}
+
+/* 解谜环境样式 */
+.puzzle-environment {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 60%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 10;
+}
+
+.interactive-area {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #FFD700;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 15;
+    transition: all 0.3s ease;
+}
+
+/* 为每个交互区域设置具体位置 */
+.interactive-area:nth-child(1) {
+    top: 20%;
+    left: 25%;
+}
+
+.interactive-area:nth-child(2) {
+    top: 40%;
+    left: 70%;
+}
+
+.interactive-area:nth-child(3) {
+    top: 60%;
+    left: 15%;
+}
+
+.interactive-area:nth-child(4) {
+    top: 30%;
+    left: 45%;
+}
+
+.interactive-area:nth-child(5) {
+    top: 70%;
+    left: 60%;
+}
+
+.interactive-area:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: #FFA500;
+}
+
+/* 正确答案区域的特殊样式 */
+.interactive-area.correct-item {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    animation: gentle-pulse 2s infinite;
+}
+
+@keyframes gentle-pulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    50% { 
+        transform: scale(1.05); 
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    }
+}
+
+/* 找到物品后的效果 */
+.found-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 200;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.item-image {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.item-description {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* 心语小猫花纹样式 */
+.cat-body {
+    position: relative;
+    width: 120px;
+    height: 140px;
+    border-radius: 50% 50% 40% 40%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+/* 星点花纹 - 积极选择 */
+.cat-body.star-spots::before {
+    content: '✨';
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    font-size: 1.2rem;
+    opacity: 0.8;
+    animation: twinkle 2s infinite;
+}
+
+.cat-body.star-spots::after {
+    content: '⭐';
+    position: absolute;
+    top: 60%;
+    right: 30%;
+    font-size: 1rem;
+    opacity: 0.9;
+    animation: twinkle 2s infinite 0.5s;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* 柔和条纹 - 倾诉选择 */
+.cat-body.soft-stripes::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(255, 255, 255, 0.3) 8px,
+        rgba(255, 255, 255, 0.3) 12px
+    );
+    border-radius: inherit;
+}
+
+/* 心形斑点 - 安慰选择 */
+.cat-body.heart-patches::before {
+    content: '💕';
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    font-size: 1.5rem;
+    opacity: 0.7;
+    animation: heartbeat 1.5s infinite;
+}
+
+.cat-body.heart-patches::after {
+    content: '💖';
+    position: absolute;
+    bottom: 30%;
+    right: 25%;
+    font-size: 1.2rem;
+    opacity: 0.8;
+    animation: heartbeat 1.5s infinite 0.3s;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* 小猫眼睛 */
+.cat-eyes {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+.cat-eyes::before,
+.cat-eyes::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+/* 配饰样式 */
+.cat-accessories-final {
+    position: absolute;
+    z-index: 10;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+/* 猫咪生成动画 */
+.generation-animation {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: linear-gradient(45deg, #FFD700, #FFB6C1);
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.magic-sparkles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.8) 2px, transparent 2px),
+        radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
+        radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+    animation: sparkle 1.5s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+.puzzle-guide {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+}
+
+.guide-text {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-left: 120px;
+}
+
+/* 特殊装饰动画效果 */
+.special-decoration.glow {
+    animation: gentle-glow 2s ease-in-out infinite;
+}
+
+.special-decoration.sparkle {
+    animation: sparkle-rotate 3s linear infinite;
+}
+
+.special-decoration.float {
+    animation: float-around 4s ease-in-out infinite;
+}
+
+@keyframes gentle-glow {
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: scale(1); 
+        filter: blur(0px);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.1); 
+        filter: blur(0.5px);
+    }
+}
+
+@keyframes sparkle-rotate {
+    0% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+    25% { transform: rotate(90deg) scale(1.1); opacity: 1; }
+    50% { transform: rotate(180deg) scale(1); opacity: 0.8; }
+    75% { transform: rotate(270deg) scale(1.1); opacity: 1; }
+    100% { transform: rotate(360deg) scale(1); opacity: 0.8; }
+}
+
+@keyframes float-around {
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-3px) translateX(2px); }
+    50% { transform: translateY(0px) translateX(0px); }
+    75% { transform: translateY(3px) translateX(-2px); }
+}
+
+/* 最终印记动画效果 */
+.final-touch.float-up {
+    animation: float-up 3s ease-in-out infinite;
+}
+
+.final-touch.glow-wisdom {
+    animation: wisdom-glow 2s ease-in-out infinite;
+}
+
+.final-touch.heartbeat {
+    animation: heartbeat-final 1.5s ease-in-out infinite;
+}
+
+@keyframes float-up {
+    0%, 100% { transform: translateY(0px); opacity: 0.8; }
+    50% { transform: translateY(-8px); opacity: 1; }
+}
+
+@keyframes wisdom-glow {
+    0%, 100% { 
+        opacity: 0.9; 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 2px #FFD700);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.1); 
+        filter: drop-shadow(0 0 8px #FFD700);
+    }
+}
+
+@keyframes heartbeat-final {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.15); }
+    50% { transform: scale(1.05); }
+    75% { transform: scale(1.15); }
+}
+
+/* 增强小猫眼睛效果 */
+.cat-eyes::before,
+.cat-eyes::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    animation: eye-blink 4s ease-in-out infinite;
+}
+
+@keyframes eye-blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+}
+
+/* 主配饰的浮动效果 */
+.main-accessory {
+    animation: accessory-float 3s ease-in-out infinite;
+}
+
+@keyframes accessory-float {
+    0%, 100% { transform: translateX(-50%) translateY(0px); }
+    50% { transform: translateX(-50%) translateY(-2px); }
+}
+
+/* 猫咪生成样式 */
+.cat-generation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 30;
+}
+
+.generated-cat {
+    width: 200px;
+    height: 200px;
+    background: #FFB6C1;
+    border-radius: 50%;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cat-description {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    margin: 20px 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+/* 最终场景样式 */
+.final-actions {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 25;
+}
+
+.save-button, .restart-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 12px 25px;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.save-button:hover, .restart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* 音频控制 */
+.audio-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
+}
+
+.audio-toggle {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* 隐藏状态 */
+.hidden {
+    display: none !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.8rem;
+        letter-spacing: 2px;
+    }
+    
+    .title-area {
+        top: 5%;
+        max-width: 95%;
+        padding: 0 15px;
+    }
+    
+    .start-button-area {
+        bottom: 3%;
+        padding: 0 15px;
+    }
+    
+    .start-button {
+        font-size: 1.1rem;
+        padding: 15px 35px;
+    }
+    
+    .start-hint {
+        font-size: 1rem;
+    }
+    
+    .video-background {
+        object-position: center center;
+    }
+    
+    .dialogue-box {
+        width: 95% !important;
+        padding: 20px !important;
+    }
+    
+    .cat-mentor {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    .choice-btn {
+        font-size: 1rem !important;
+        padding: 12px 20px !important;
+    }
+
+    .cat-body {
+        width: 100px;
+        height: 120px;
+    }
+    
+    .special-decoration {
+        font-size: 1rem !important;
+    }
+    
+    .final-touch {
+        font-size: 1.2rem !important;
+    }
+    
+    /* 视觉小说响应式设计 */
+    .vn-character-container {
+        width: 360px;
+        height: 480px;
+        top: 5%;
+    }
+    
+    .vn-dialogue-container {
+        height: 40%;
+        padding: 15px;
+    }
+    
+    .vn-name-box {
+        font-size: 1rem;
+        padding: 6px 15px;
+    }
+    
+    .vn-text-box {
+        padding: 15px 18px;
+        min-height: 60px;
+    }
+    
+    .vn-text-content {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    
+    .vn-choices-container {
+        width: 95%;
+        top: -180px;
+        right: 10px;
+    }
+    
+    .vn-choice-btn {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+    
+    .vn-continue-hint {
+        bottom: 25px;
+        right: 25px;
+        font-size: 0.8rem;
+        padding: 4px 10px;
+    }
+    
+    /* 探索物品移动端适配 */
+    .exploration-item {
+        width: 60px;
+        height: 60px;
+    }
+    
+    /* 移动端物品位置微调，确保分散 */
+    .exploration-items.tired .exploration-item:nth-child(1) {
+        top: 20%;
+        left: 10%;
+    }
+    
+    .exploration-items.tired .exploration-item:nth-child(2) {
+        top: 65%;
+        left: 70%;
+    }
+    
+    .exploration-items.tired .exploration-item:nth-child(3) {
+        top: 40%;
+        left: 80%;
+    }
+    
+    .exploration-items.nervous .exploration-item:nth-child(1) {
+        top: 25%;
+        left: 75%;
+    }
+    
+    .exploration-items.nervous .exploration-item:nth-child(2) {
+        top: 60%;
+        left: 15%;
+    }
+    
+    .exploration-items.nervous .exploration-item:nth-child(3) {
+        top: 35%;
+        left: 35%;
+    }
+    
+    .exploration-items.missing .exploration-item:nth-child(1) {
+        top: 30%;
+        left: 20%;
+    }
+    
+    .exploration-items.missing .exploration-item:nth-child(2) {
+        top: 20%;
+        left: 65%;
+    }
+    
+    .exploration-items.missing .exploration-item:nth-child(3) {
+        top: 65%;
+        left: 75%;
+    }
+    
+    .guide-text-floating {
+        font-size: 0.9rem;
+        padding: 15px 20px;
+        max-width: 90%;
+    }
+    
+    .floating-guide {
+        top: 10%;
+    }
+    
+    /* 收集进度移动端适配 */
+    .collection-progress {
+        top: 85%;
+        padding: 10px 15px;
+    }
+    
+    .progress-text {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+    }
+    
+    .progress-dot {
+        font-size: 1rem;
+    }
+    
+    .progress-count {
+        font-size: 0.75rem;
+    }
+    
+    /* 移动端继续按钮优化 */
+    .continue-exploration-btn {
+        bottom: 5%;
+        right: 3%;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        border-radius: 15px;
+        gap: 4px;
+    }
+    
+    .continue-exploration-btn .btn-text {
+        letter-spacing: 0.3px;
+    }
+    
+    .continue-exploration-btn .btn-icon {
+        font-size: 0.8rem;
+    }
+} 
+
+/* ================ 情绪氛围效果 ================ */
+
+/* 氛围覆盖层基础样式 */
+.atmosphere-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.atmosphere-overlay.active {
+    opacity: 1;
+}
+
+/* 情绪分支场景-低落 (疲惫/提不起劲) */
+.atmosphere-tired {
+    background: linear-gradient(135deg, 
+        rgba(100, 120, 150, 0.2) 0%, 
+        rgba(80, 100, 130, 0.15) 50%, 
+        rgba(90, 110, 140, 0.2) 100%);
+    box-shadow: inset 0 0 150px rgba(70, 90, 120, 0.1);
+}
+
+.atmosphere-tired::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(3px 3px at 15% 25%, rgba(200, 220, 240, 0.4), transparent),
+        radial-gradient(2px 2px at 85% 75%, rgba(180, 200, 220, 0.3), transparent),
+        radial-gradient(4px 4px at 50% 50%, rgba(220, 230, 250, 0.2), transparent),
+        radial-gradient(1px 1px at 30% 80%, rgba(190, 210, 230, 0.3), transparent);
+    animation: floating-bubbles 12s linear infinite;
+}
+
+@keyframes floating-bubbles {
+    0% { transform: translateY(-50px) translateX(-10px) scale(0.8); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.3; }
+    100% { transform: translateY(calc(100vh + 50px)) translateX(10px) scale(1.2); opacity: 0; }
+}
+
+/* 情绪分支场景-紧张 */
+.atmosphere-nervous {
+    background: linear-gradient(45deg, 
+        rgba(255, 230, 180, 0.15) 0%, 
+        rgba(255, 240, 200, 0.1) 50%, 
+        rgba(255, 220, 160, 0.15) 100%);
+    animation: gentle-nervous-pulse 3s ease-in-out infinite alternate;
+}
+
+.atmosphere-nervous::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255, 220, 180, 0.5), transparent),
+        radial-gradient(3px 3px at 80% 20%, rgba(255, 200, 150, 0.4), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(255, 240, 200, 0.3), transparent),
+        radial-gradient(4px 4px at 40% 50%, rgba(255, 210, 160, 0.3), transparent);
+    animation: nervous-sparkles 6s linear infinite;
+}
+
+.atmosphere-nervous::after {
+    content: '';
+    position: absolute;
+    bottom: 22%;
+    right: 32%;
+    width: 8px;
+    height: 12px;
+    background: rgba(255, 240, 200, 0.2);
+    border-radius: 50%;
+    animation: gentle-warmth 3s ease-in-out infinite;
+}
+
+@keyframes gentle-nervous-pulse {
+    0% { filter: brightness(1) contrast(1); }
+    100% { filter: brightness(1.05) contrast(1.02); }
+}
+
+@keyframes nervous-sparkles {
+    0% { transform: translateY(-30px) scale(0.5); opacity: 0; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.4; }
+    100% { transform: translateY(calc(100vh + 30px)) scale(1.2); opacity: 0; }
+}
+
+@keyframes gentle-warmth {
+    0%, 100% { transform: scale(1) translateY(0); opacity: 0.3; }
+    50% { transform: scale(1.1) translateY(-2px); opacity: 0.1; }
+}
+
+/* 情绪分支场景-思念 */
+.atmosphere-missing {
+    background: linear-gradient(135deg, 
+        rgba(255, 180, 100, 0.3) 0%, 
+        rgba(255, 220, 150, 0.2) 50%, 
+        rgba(255, 200, 120, 0.3) 100%);
+    filter: blur(0.5px);
+    animation: warm-glow 4s ease-in-out infinite alternate;
+}
+
+.atmosphere-missing::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(4px 8px at 15% 25%, rgba(255, 200, 150, 0.8), transparent),
+        radial-gradient(3px 6px at 85% 15%, rgba(255, 180, 120, 0.6), transparent),
+        radial-gradient(5px 10px at 60% 85%, rgba(255, 220, 170, 0.7), transparent),
+        radial-gradient(2px 4px at 30% 60%, rgba(255, 240, 180, 0.5), transparent);
+    animation: floating-petals 10s linear infinite;
+}
+
+.atmosphere-missing::after {
+    content: '';
+    position: absolute;
+    bottom: 25%;
+    right: 25%;
+    width: 15px;
+    height: 30px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 50%;
+    animation: steam-rise 3s ease-in-out infinite;
+}
+
+@keyframes warm-glow {
+    0% { filter: blur(0.5px) brightness(1) saturate(1.2); }
+    100% { filter: blur(1px) brightness(1.1) saturate(1.4); }
+}
+
+@keyframes floating-petals {
+    0% { transform: translateY(-50px) translateX(-20px) rotate(0deg); }
+    100% { transform: translateY(calc(100vh + 50px)) translateX(20px) rotate(180deg); }
+}
+
+@keyframes steam-rise {
+    0% { transform: translateY(0) scale(1) opacity(0.8); }
+    50% { transform: translateY(-20px) scale(1.2) opacity(0.4); }
+    100% { transform: translateY(-40px) scale(1.5) opacity(0); }
+}
+
+/* 视频背景的情绪滤镜 */
+.video-background.atmosphere-tired {
+    filter: 
+        brightness(0.85) 
+        contrast(0.9) 
+        saturate(0.8) 
+        hue-rotate(15deg) 
+        sepia(0.1);
+}
+
+.video-background.atmosphere-nervous {
+    filter: 
+        brightness(1.02) 
+        contrast(1.05) 
+        saturate(1.05);
+    animation: video-nervous-effect 4s ease-in-out infinite alternate;
+}
+
+.video-background.atmosphere-missing {
+    filter: 
+        brightness(1.05) 
+        contrast(0.95) 
+        saturate(1.2) 
+        hue-rotate(-5deg) 
+        sepia(0.1);
+}
+
+@keyframes video-nervous-effect {
+    0% { filter: brightness(1.02) contrast(1.05) saturate(1.05); }
+    100% { filter: brightness(1.0) contrast(1.02) saturate(1.0); }
+} 
+
+/* ================ 探索界面视频背景 ================ */
+
+/* 探索视频背景样式 */
+.exploration-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    pointer-events: none;
+    /* 优化视频性能 */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: auto;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.exploration-video.active {
+    opacity: 1;
+}
+
+/* 探索内容区域 */
+.exploration-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 1s ease-out;
+}
+
+.exploration-content.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 针对不同情绪的视频微调 */
+.exploration-video#exploration-tired {
+    filter: brightness(0.95) contrast(1.05) saturate(1.1);
+}
+
+.exploration-video#exploration-nervous {
+    filter: brightness(1.02) contrast(1.03) saturate(1.05);
+}
+
+.exploration-video#exploration-missing {
+    filter: brightness(1.05) contrast(0.98) saturate(1.15);
+}
+
+/* 确保交互区域初始隐藏 */
+.puzzle-environment.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.puzzle-environment.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* 探索界面的特殊效果层 */
+.exploration-atmosphere {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+
+.exploration-atmosphere.active {
+    opacity: 1;
+}
+
+/* 疲惫 - 神秘花园大气效果 */
+.exploration-atmosphere.tired {
+    background: radial-gradient(ellipse at 30% 60%, rgba(120, 150, 180, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 40%, rgba(100, 130, 160, 0.1) 0%, transparent 50%);
+}
+
+.exploration-atmosphere.tired::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 25% 35%, rgba(200, 220, 240, 0.3), transparent),
+        radial-gradient(1px 1px at 75% 25%, rgba(180, 200, 220, 0.2), transparent),
+        radial-gradient(3px 3px at 60% 80%, rgba(160, 190, 220, 0.25), transparent);
+    animation: mysterious-particles 15s linear infinite;
+}
+
+@keyframes mysterious-particles {
+    0% { transform: translateY(-30px) translateX(-10px); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.2; }
+    100% { transform: translateY(calc(100vh + 30px)) translateX(15px); opacity: 0; }
+}
+
+/* 紧张 - 清晨林间大气效果 */
+.exploration-atmosphere.nervous {
+    background: linear-gradient(45deg, 
+                rgba(255, 240, 200, 0.08) 0%, 
+                rgba(255, 220, 180, 0.05) 50%, 
+                rgba(255, 200, 160, 0.08) 100%);
+}
+
+.exploration-atmosphere.nervous::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(1px 2px at 20% 30%, rgba(255, 235, 200, 0.4), transparent),
+        radial-gradient(2px 1px at 80% 20%, rgba(255, 220, 180, 0.3), transparent),
+        radial-gradient(1px 1px at 50% 70%, rgba(255, 200, 150, 0.2), transparent);
+    animation: morning-light 12s linear infinite;
+}
+
+@keyframes morning-light {
+    0% { transform: translateX(-20px) scale(0.8); opacity: 0; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.3; }
+    100% { transform: translateX(calc(100vw + 20px)) scale(1.2); opacity: 0; }
+}
+
+/* 思念 - 星空岛屿大气效果 */
+.exploration-atmosphere.missing {
+    background: radial-gradient(ellipse at 50% 30%, rgba(255, 200, 150, 0.12) 0%, transparent 70%),
+                radial-gradient(ellipse at 80% 70%, rgba(255, 180, 120, 0.08) 0%, transparent 60%);
+}
+
+.exploration-atmosphere.missing::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(3px 6px at 15% 25%, rgba(255, 220, 180, 0.5), transparent),
+        radial-gradient(2px 4px at 85% 15%, rgba(255, 200, 150, 0.4), transparent),
+        radial-gradient(4px 8px at 60% 85%, rgba(255, 180, 120, 0.3), transparent),
+        radial-gradient(1px 2px at 30% 60%, rgba(255, 240, 200, 0.3), transparent);
+    animation: starry-magic 18s linear infinite;
+}
+
+@keyframes starry-magic {
+    0% { transform: translateY(-40px) rotate(0deg) scale(0.5); opacity: 0; }
+    25% { opacity: 0.8; }
+    75% { opacity: 0.4; }
+    100% { transform: translateY(calc(100vh + 40px)) rotate(180deg) scale(1.5); opacity: 0; }
+} 
+
+/* ================ 探索物品系统 ================ */
+
+/* 探索物品容器 */
+.exploration-items {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.exploration-items.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* 探索物品通用样式 */
+.exploration-item {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    pointer-events: all;
+    z-index: 15;
+}
+
+.exploration-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    transition: all 0.4s ease;
+}
+
+.exploration-item:hover {
+    transform: scale(1.15);
+}
+
+.exploration-item:hover img {
+    filter: drop-shadow(0 6px 20px rgba(255, 215, 0, 0.5)) brightness(1.1);
+}
+
+/* 疲惫分支物品位置 - 神秘花园 */
+.exploration-items.tired .exploration-item:nth-child(1) {
+    top: 15%;
+    left: 15%;
+    animation: gentle-float-1 4s ease-in-out infinite;
+}
+
+.exploration-items.tired .exploration-item:nth-child(2) {
+    top: 70%;
+    left: 75%;
+    animation: gentle-float-2 3.5s ease-in-out infinite;
+}
+
+.exploration-items.tired .exploration-item:nth-child(3) {
+    top: 40%;
+    left: 85%;
+    animation: gentle-float-3 4.2s ease-in-out infinite;
+}
+
+/* 紧张分支物品位置 - 清晨林间 */
+.exploration-items.nervous .exploration-item:nth-child(1) {
+    top: 20%;
+    left: 80%;
+    animation: gentle-float-4 3.8s ease-in-out infinite;
+}
+
+.exploration-items.nervous .exploration-item:nth-child(2) {
+    top: 65%;
+    left: 10%;
+    animation: gentle-float-1 4.2s ease-in-out infinite;
+}
+
+.exploration-items.nervous .exploration-item:nth-child(3) {
+    top: 35%;
+    left: 30%;
+    animation: gentle-float-2 3.6s ease-in-out infinite;
+}
+
+/* 思念分支物品位置 - 星空岛屿 */
+.exploration-items.missing .exploration-item:nth-child(1) {
+    top: 25%;
+    left: 20%;
+    animation: gentle-float-center 4s ease-in-out infinite;
+}
+
+.exploration-items.missing .exploration-item:nth-child(2) {
+    top: 15%;
+    left: 70%;
+    animation: gentle-float-3 3.8s ease-in-out infinite;
+}
+
+.exploration-items.missing .exploration-item:nth-child(3) {
+    top: 70%;
+    left: 80%;
+    animation: gentle-float-4 4.2s ease-in-out infinite;
+}
+
+/* 浮动动画 */
+@keyframes gentle-float-1 {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateY(-8px) rotate(2deg); 
+        opacity: 1;
+    }
+}
+
+@keyframes gentle-float-2 {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateY(-6px) rotate(-2deg); 
+        opacity: 1;
+    }
+}
+
+@keyframes gentle-float-3 {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateY(-7px) rotate(1deg); 
+        opacity: 1;
+    }
+}
+
+@keyframes gentle-float-4 {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateY(-9px) rotate(-1deg); 
+        opacity: 1;
+    }
+}
+
+@keyframes gentle-float-center {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.95;
+    }
+    50% { 
+        transform: translateY(-10px) rotate(0deg); 
+        opacity: 1;
+    }
+}
+
+/* ================ 浮动引导文字 ================ */
+
+.floating-guide {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    pointer-events: none;
+}
+
+.guide-text-floating {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 20px 30px;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: floating-appear 0.8s ease-out forwards, floating-disappear 0.8s ease-in 2s forwards;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes floating-appear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
+@keyframes floating-disappear {
+    0% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+} 
+
+/* ================ 收集进度显示 ================ */
+
+.collection-progress {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 12px 20px;
+    text-align: center;
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    transition: all 0.8s ease-out;
+    display: none; /* 隐藏收集进度框 */
+}
+
+.collection-progress.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0px);
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.progress-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.progress-dot {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+}
+
+.progress-dot.collected {
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    transform: scale(1.1);
+}
+
+.progress-count {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 继续探索按钮 */
+.continue-exploration-btn {
+    position: absolute;
+    bottom: 8%;
+    right: 5%;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    opacity: 0;
+    /* 柔和的内光效果 */
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.continue-exploration-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #fff;
+}
+
+.continue-exploration-btn .btn-text {
+    flex: 1;
+    letter-spacing: 0.5px;
+}
+
+.continue-exploration-btn .btn-icon {
+    animation: gentle-sparkle 3s ease-in-out infinite;
+    font-size: 0.9rem;
+}
+
+@keyframes gentle-sparkle {
+    0%, 100% { 
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.1);
+    }
+} 
+
+/* ===== 场景加载页面样式 ===== */
+.scene-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, 
+        rgba(255, 182, 193, 0.96) 0%, 
+        rgba(230, 230, 250, 0.96) 25%, 
+        rgba(255, 240, 245, 0.96) 50%, 
+        rgba(240, 248, 255, 0.96) 75%, 
+        rgba(255, 228, 225, 0.96) 100%);
+    backdrop-filter: blur(25px);
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1s ease;
+    animation: backgroundShimmer 8s ease-in-out infinite;
+}
+
+@keyframes backgroundShimmer {
+    0%, 100% {
+        background: linear-gradient(135deg, 
+            rgba(255, 182, 193, 0.96) 0%, 
+            rgba(230, 230, 250, 0.96) 25%, 
+            rgba(255, 240, 245, 0.96) 50%, 
+            rgba(240, 248, 255, 0.96) 75%, 
+            rgba(255, 228, 225, 0.96) 100%);
+    }
+    50% {
+        background: linear-gradient(135deg, 
+            rgba(255, 228, 225, 0.96) 0%, 
+            rgba(255, 182, 193, 0.96) 25%, 
+            rgba(230, 230, 250, 0.96) 50%, 
+            rgba(255, 240, 245, 0.96) 75%, 
+            rgba(240, 248, 255, 0.96) 100%);
+    }
+}
+
+.scene-loading.active {
+    display: flex;
+    opacity: 1;
+}
+
+.loading-content {
+    text-align: center;
+    position: relative;
+    max-width: 450px;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 6px 28px rgba(0, 0, 0, 0.08),
+        0 3px 12px rgba(255, 182, 193, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* 装饰性元素 */
+.loading-decoration {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 90px;
+    pointer-events: none;
+}
+
+.floating-hearts {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.floating-hearts .heart {
+    position: absolute;
+    font-size: 1.3rem;
+    animation: floatHeart 5s ease-in-out infinite;
+    opacity: 0.75;
+    filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.3));
+}
+
+.floating-hearts .heart:nth-child(1) {
+    left: 8%;
+    animation-delay: 0s;
+}
+
+.floating-hearts .heart:nth-child(2) {
+    left: 28%;
+    animation-delay: 1s;
+}
+
+.floating-hearts .heart:nth-child(3) {
+    left: 50%;
+    animation-delay: 2s;
+}
+
+.floating-hearts .heart:nth-child(4) {
+    left: 72%;
+    animation-delay: 3s;
+}
+
+.floating-hearts .heart:nth-child(5) {
+    left: 92%;
+    animation-delay: 4s;
+}
+
+@keyframes floatHeart {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+        opacity: 0.65;
+    }
+    25% {
+        transform: translateY(-12px) rotate(8deg) scale(1.05);
+        opacity: 0.85;
+    }
+    50% {
+        transform: translateY(-25px) rotate(-8deg) scale(1.1);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-12px) rotate(5deg) scale(1.05);
+        opacity: 0.85;
+    }
+}
+
+/* 主要文字 - 更小巧精致 */
+.loading-main-text {
+    margin: 40px 0 30px 0;
+}
+
+.loading-title {
+    font-size: 1rem;
+    color: rgba(255, 105, 180, 0.88);
+    font-weight: 300;
+    margin-bottom: 8px;
+    letter-spacing: 1.2px;
+    text-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 0 6px rgba(255, 105, 180, 0.25);
+    animation: fadeInUp 1.2s ease-out;
+}
+
+.loading-scene-name {
+    font-size: 1.5rem;
+    color: rgba(75, 75, 75, 0.92);
+    font-weight: 500;
+    margin-bottom: 15px;
+    letter-spacing: 0.6px;
+    background: linear-gradient(45deg, 
+        #FF69B4 0%, 
+        #FFB6C1 25%, 
+        #DDA0DD 50%, 
+        #E6E6FA 75%, 
+        #FF69B4 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: 
+        fadeInUp 1.2s ease-out 0.3s both, 
+        shimmer 4s ease-in-out infinite,
+        gradientShift 6s ease-in-out infinite;
+    text-shadow: 0 1px 6px rgba(255, 182, 193, 0.15);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        filter: brightness(1) saturate(1);
+    }
+    50% {
+        filter: brightness(1.3) saturate(1.2);
+    }
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* 进度动画 - 添加精美进度条 */
+.loading-progress {
+    margin: 25px 0;
+    animation: fadeInUp 1.2s ease-out 0.6s both;
+}
+
+/* 进度条容器 */
+.progress-bar-container {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.progress-bar-background {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 
+        inset 0 1px 3px rgba(0, 0, 0, 0.1),
+        0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, 
+        #FFB6C1 0%, 
+        #FF69B4 25%, 
+        #DDA0DD 50%, 
+        #E6E6FA 75%, 
+        #FFB6C1 100%);
+    background-size: 200% 100%;
+    border-radius: 10px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: progressShimmer 2s linear infinite;
+    position: relative;
+    box-shadow: 
+        0 0 8px rgba(255, 105, 180, 0.4),
+        0 1px 3px rgba(255, 182, 193, 0.3);
+}
+
+.progress-shine {
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    animation: progressShine 2s ease-in-out infinite;
+}
+
+.progress-percentage {
+    font-size: 0.75rem;
+    color: rgba(255, 105, 180, 0.8);
+    font-weight: 300;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes progressShimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes progressShine {
+    0% {
+        left: -50%;
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        left: 100%;
+        opacity: 0;
+    }
+}
+
+.progress-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.progress-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, 
+        #FFB6C1 0%, 
+        #DDA0DD 50%, 
+        #E6E6FA 100%);
+    animation: dotPulse 1.6s ease-in-out infinite;
+    box-shadow: 
+        0 2px 6px rgba(255, 182, 193, 0.4),
+        0 0 12px rgba(221, 160, 221, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.progress-dots .dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.progress-dots .dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.progress-dots .dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes dotPulse {
+    0%, 70%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+        box-shadow: 
+            0 2px 6px rgba(255, 182, 193, 0.4),
+            0 0 12px rgba(221, 160, 221, 0.3);
+    }
+    35% {
+        transform: scale(1.4);
+        opacity: 1;
+        box-shadow: 
+            0 3px 12px rgba(255, 182, 193, 0.6),
+            0 0 20px rgba(221, 160, 221, 0.5);
+    }
+}
+
+/* 轮播温馨话语 */
+.loading-quotes {
+    margin-top: 35px;
+    animation: fadeInUp 1.2s ease-out 0.9s both;
+}
+
+.quote-text {
+    font-size: 0.85rem;
+    color: rgba(75, 75, 75, 0.82);
+    line-height: 1.4;
+    font-weight: 300;
+    letter-spacing: 0.2px;
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    box-shadow: 
+        0 3px 12px rgba(0, 0, 0, 0.06),
+        0 1px 6px rgba(255, 182, 193, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    animation: quoteSlide 1.2s ease-out;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.quote-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.25), 
+        transparent);
+    animation: shimmerEffect 4s ease-in-out infinite;
+}
+
+@keyframes quoteSlide {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shimmerEffect {
+    0% {
+        left: -100%;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        left: 100%;
+        opacity: 0;
+    }
+}
+
+/* 响应式设计 - 保持小巧精致 */
+@media (max-width: 768px) {
+    .loading-content {
+        padding: 20px 16px;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    .loading-main-text {
+        margin: 35px 0 25px 0;
+    }
+    
+    .loading-title {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+    
+    .loading-scene-name {
+        font-size: 1.3rem;
+        letter-spacing: 0.4px;
+    }
+    
+    .quote-text {
+        font-size: 0.8rem;
+        max-width: 280px;
+        padding: 10px 14px;
+        line-height: 1.4;
+    }
+    
+    .floating-hearts .heart {
+        font-size: 1.1rem;
+    }
+    
+    .loading-decoration {
+        top: -35px;
+        width: 160px;
+        height: 80px;
+    }
+    
+    .progress-dots .dot {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .loading-content {
+        padding: 20px 15px;
+        max-width: 95%;
+    }
+    
+    .loading-title {
+        font-size: 1.1rem;
+    }
+    
+    .loading-scene-name {
+        font-size: 1.5rem;
+    }
+    
+    .quote-text {
+        font-size: 0.85rem;
+        padding: 12px 16px;
+        max-width: 280px;
+    }
+} 

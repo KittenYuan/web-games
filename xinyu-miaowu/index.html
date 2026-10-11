@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心语喵屋 - Whispers & Whiskers Retreat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 场景0：启动画面 -->
+        <div class="scene active" id="scene-0">
+            <!-- 视频背景 -->
+            <video class="video-background" id="intro-video" autoplay muted loop playsinline preload="metadata" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/初始界面.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <!-- 标题区域 - 在树屋上方 -->
+            <div class="title-area">
+                <h1 class="game-title">心语喵屋</h1>
+            </div>
+            
+            <!-- 开始按钮区域 - 在正中下方 -->
+            <div class="start-button-area">
+                <button class="start-button" onclick="startGame()">点击开始</button>
+                <div class="start-hint">✨ 点击开始你的心灵之旅 ✨</div>
+            </div>
+        </div>
+
+        <!-- 场景1：进入喵屋 -->
+        <div class="scene" id="scene-1">
+            <!-- 视频背景 -->
+            <video class="video-background" id="scene1-video" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/喵屋内部.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <!-- 情绪氛围覆盖层 -->
+            <div class="atmosphere-overlay atmosphere-tired" id="atmosphere-tired"></div>
+            <div class="atmosphere-overlay atmosphere-nervous" id="atmosphere-nervous"></div>
+            <div class="atmosphere-overlay atmosphere-missing" id="atmosphere-missing"></div>
+            
+            <!-- 视觉小说角色图片 -->
+            <div class="vn-character-container">
+                <img class="cat-character reading" id="cat-reading" src="素材包/猫导师看书.png" alt="猫导师看书">
+                <img class="cat-character talking hidden" id="cat-talking" src="素材包/猫导师放书.png" alt="猫导师放书">
+            </div>
+            
+            <!-- 视觉小说对话框 -->
+            <div class="vn-dialogue-container" id="vn-dialogue">
+                <div class="vn-name-box" id="vn-name">猫导师</div>
+                <div class="vn-text-box" id="vn-text">
+                    <div class="vn-text-content" id="vn-text-content"></div>
+                </div>
+                <div class="vn-choices-container hidden" id="vn-choices">
+                    <button class="vn-choice-btn" onclick="makeChoice(1, 'A')" id="choice-1A">
+                        (微微叹气) "嗯...是有点提不起劲，像心里的小风车转不动了。"
+                    </button>
+                    <button class="vn-choice-btn" onclick="makeChoice(1, 'B')" id="choice-1B">
+                        (轻声) "有点紧张...明天有个小小的挑战。"
+                    </button>
+                    <button class="vn-choice-btn" onclick="makeChoice(1, 'C')" id="choice-1C">
+                        (看向窗外) "...有点想念某个温暖的人了。"
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 点击继续提示 -->
+            <div class="vn-continue-hint" id="vn-continue">点击继续...</div>
+        </div>
+
+        <!-- 场景2：倾听与引导 -->
+        <div class="scene" id="scene-2">
+            <!-- 视频背景 -->
+            <video class="video-background" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/喵屋内部.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <!-- 视觉小说角色图片 -->
+            <div class="vn-character-container">
+                <img class="cat-character talking" id="cat-talking-2" src="素材包/猫导师放书.png" alt="猫导师放书">
+            </div>
+            
+            <!-- 视觉小说对话框 -->
+            <div class="vn-dialogue-container" id="vn-dialogue-2">
+                <div class="vn-name-box" id="vn-name-2">猫导师</div>
+                <div class="vn-text-box" id="vn-text-2">
+                    <div class="vn-text-content" id="vn-text-content-2"></div>
+                </div>
+                <div class="vn-choices-container hidden" id="vn-choices-2">
+                    <button class="vn-choice-btn" onclick="makeChoice(2, 'A')" id="choice-2A"></button>
+                    <button class="vn-choice-btn" onclick="makeChoice(2, 'B')" id="choice-2B"></button>
+                    <button class="vn-choice-btn" onclick="makeChoice(2, 'C')" id="choice-2C"></button>
+                </div>
+            </div>
+            
+            <!-- 点击继续提示 -->
+            <div class="vn-continue-hint" id="vn-continue-2">点击继续...</div>
+        </div>
+
+        <!-- 场景3：情绪解谜小游戏 -->
+        <div class="scene" id="scene-3">
+            <!-- 动态视频背景 - 根据情绪分支显示不同视频 -->
+            <!-- 疲惫/低落 - 神秘花园 -->
+            <video class="exploration-video hidden" id="exploration-tired" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/神秘花园动态.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 紧张 - 清晨林间 -->
+            <video class="exploration-video hidden" id="exploration-nervous" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/清晨林间.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 思念 - 星空岛屿 -->
+            <video class="exploration-video hidden" id="exploration-missing" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/星空岛屿.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <!-- 探索大气效果层 -->
+            <div class="exploration-atmosphere tired hidden" id="exploration-atmosphere-tired"></div>
+            <div class="exploration-atmosphere nervous hidden" id="exploration-atmosphere-nervous"></div>
+            <div class="exploration-atmosphere missing hidden" id="exploration-atmosphere-missing"></div>
+            
+            <!-- 疲惫分支物品 - 神秘花园 -->
+            <div class="exploration-items tired hidden" id="exploration-items-tired">
+                <div class="exploration-item" data-item="courage-stone" onclick="clickExplorationItem('courage-stone')">
+                    <img src="素材包/勇气小石头.png" alt="勇气小石头">
+                </div>
+                <div class="exploration-item" data-item="glowing-orchid" onclick="clickExplorationItem('glowing-orchid')">
+                    <img src="素材包/发光小兰花.png" alt="发光小兰花">
+                </div>
+                <div class="exploration-item" data-item="crystal-chime" onclick="clickExplorationItem('crystal-chime')">
+                    <img src="素材包/水晶小风铃.png" alt="水晶小风铃">
+                </div>
+            </div>
+            
+            <!-- 紧张分支物品 - 清晨林间 -->
+            <div class="exploration-items nervous hidden" id="exploration-items-nervous">
+                <div class="exploration-item" data-item="cloud-pillow" onclick="clickExplorationItem('cloud-pillow')">
+                    <img src="素材包/云朵小抱枕.png" alt="云朵小抱枕">
+                </div>
+                <div class="exploration-item" data-item="starlight-bottle" onclick="clickExplorationItem('starlight-bottle')">
+                    <img src="素材包/星光小瓶子.png" alt="星光小瓶子">
+                </div>
+                <div class="exploration-item" data-item="courage-stone" onclick="clickExplorationItem('courage-stone')">
+                    <img src="素材包/勇气小石头.png" alt="勇气小石头">
+                </div>
+            </div>
+            
+            <!-- 思念分支物品 - 星空岛屿 -->
+            <div class="exploration-items missing hidden" id="exploration-items-missing">
+                <div class="exploration-item" data-item="crystal-chime" onclick="clickExplorationItem('crystal-chime')">
+                    <img src="素材包/水晶小风铃.png" alt="水晶小风铃">
+                </div>
+                <div class="exploration-item" data-item="glowing-orchid" onclick="clickExplorationItem('glowing-orchid')">
+                    <img src="素材包/发光小兰花.png" alt="发光小兰花">
+                </div>
+                <div class="exploration-item" data-item="starlight-bottle" onclick="clickExplorationItem('starlight-bottle')">
+                    <img src="素材包/星光小瓶子.png" alt="星光小瓶子">
+                </div>
+            </div>
+            
+            <!-- 探索界面内容 - 延迟显示 -->
+            <div class="exploration-content hidden" id="exploration-content">
+                <div class="floating-guide" id="floating-guide">
+                    <div class="guide-text-floating" id="guide-text-floating">
+                        喵~ 看来我们需要一点小小的'心绪整理'。在这个安静的地方，藏着一些能让你此刻感到平静的小东西。用心感受，它会悄悄呼唤你...
+                    </div>
+                </div>
+                
+                <!-- 收集进度显示 -->
+                <div class="collection-progress" id="collection-progress">
+                    <div class="progress-text">心灵碎片</div>
+                    <div class="progress-indicators">
+                        <span class="progress-dot" id="progress-dot-1">○</span>
+                        <span class="progress-dot" id="progress-dot-2">○</span>
+                        <span class="progress-dot" id="progress-dot-3">○</span>
+                    </div>
+                    <div class="progress-count" id="progress-count">0/3</div>
+                </div>
+                
+                <!-- 继续探索按钮 -->
+                <button class="continue-exploration-btn" id="continue-exploration-btn" onclick="continueToNextScene()" style="display: none;">
+                    <span class="btn-text">继续我的心灵之旅</span>
+                    <span class="btn-icon">✨</span>
+                </button>
+                
+                <div class="found-item" id="found-item" style="display: none;">
+                    <div class="item-glow"></div>
+                    <div class="item-image" id="item-image"></div>
+                    <div class="item-description" id="item-description"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 场景4：领悟与馈赠 -->
+        <div class="scene" id="scene-4">
+            <!-- 视频背景 -->
+            <video class="video-background" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/喵屋内部.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <!-- 情绪氛围覆盖层 -->
+            <div class="atmosphere-overlay atmosphere-tired" id="atmosphere-tired-4"></div>
+            <div class="atmosphere-overlay atmosphere-nervous" id="atmosphere-nervous-4"></div>
+            <div class="atmosphere-overlay atmosphere-missing" id="atmosphere-missing-4"></div>
+            
+            <!-- 视觉小说角色图片 -->
+            <div class="vn-character-container">
+                <img class="cat-character talking" id="cat-talking-4" src="素材包/猫导师放书.png" alt="猫导师放书">
+            </div>
+            
+            <!-- 视觉小说对话框 -->
+            <div class="vn-dialogue-container" id="vn-dialogue-4">
+                <div class="vn-name-box" id="vn-name-4">猫导师</div>
+                <div class="vn-text-box" id="vn-text-4">
+                    <div class="vn-text-content" id="vn-text-content-4"></div>
+                </div>
+                <div class="vn-choices-container hidden" id="vn-choices-4">
+                    <button class="vn-choice-btn" onclick="makeChoice(4, 'A')" id="choice-4A">
+                        "嗯，心里好像轻松了一点点。"
+                    </button>
+                    <button class="vn-choice-btn" onclick="makeChoice(4, 'B')" id="choice-4B">
+                        "我学到了一些温暖的小方法。"
+                    </button>
+                    <button class="vn-choice-btn" onclick="makeChoice(4, 'C')" id="choice-4C">
+                        "谢谢你，温柔的伙伴。"
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 点击继续提示 -->
+            <div class="vn-continue-hint" id="vn-continue-4">点击继续...</div>
+        </div>
+
+        <!-- 场景5：保存与告别 -->
+        <div class="scene" id="scene-5">
+            <!-- 视频背景 -->
+            <video class="video-background" id="scene5-video" autoplay muted loop playsinline preload="none" x-webkit-airplay="deny" webkit-playsinline="true" disablepictureinpicture="true">
+                <source src="素材包/喵屋内部.mp4" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+            
+            <!-- 视频遮罩层 -->
+            <div class="video-overlay"></div>
+            
+            <div class="magical-effects"></div>
+            <div class="content">
+                <div class="cat-generation" id="cat-generation">
+                    <div class="generation-animation">
+                        <div class="magic-sparkles"></div>
+                        <div class="generated-cat" id="generated-cat">
+                            <div class="cat-body"></div>
+                            <div class="cat-eyes"></div>
+                            <div class="cat-accessories-final"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="final-dialogue">
+                    <div class="dialogue-text" id="final-dialogue-text"></div>
+                    <div class="cat-description" id="cat-description"></div>
+                    <div class="farewell-message" id="farewell-message"></div>
+                </div>
+                <div class="final-actions">
+                    <button class="save-button" onclick="saveCat()">长按保存你的心灵伙伴小猫</button>
+                    <button class="restart-button" onclick="restartGame()">重新开始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 场景加载页面 -->
+    <div class="scene-loading" id="scene-loading">
+        <div class="loading-content">
+            <!-- 装饰性元素 -->
+            <div class="loading-decoration">
+                <div class="floating-hearts">
+                    <span class="heart">💕</span>
+                    <span class="heart">🌸</span>
+                    <span class="heart">✨</span>
+                    <span class="heart">🐱</span>
+                    <span class="heart">☁️</span>
+                </div>
+            </div>
+            
+            <!-- 主要文字 -->
+            <div class="loading-main-text">
+                <div class="loading-title" id="loading-title">正在进入...</div>
+                <div class="loading-scene-name" id="loading-scene-name">猫咪的世界</div>
+            </div>
+            
+            <!-- 进度条动画 -->
+            <div class="loading-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar-background">
+                        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                        <div class="progress-shine"></div>
+                    </div>
+                    <div class="progress-percentage" id="progress-percentage">0%</div>
+                </div>
+                <div class="progress-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            
+            <!-- 轮播温馨话语 -->
+            <div class="loading-quotes">
+                <div class="quote-text" id="quote-text">在这里，每一份情感都被温柔以待...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音效控制 -->
+    <div class="audio-controls">
+        <button class="audio-toggle" onclick="toggleAudio()">🔊</button>
+    </div>
+
+    <!-- 隐藏的音频元素 -->
+    <!-- 游戏初始界面BGM -->
+    <audio id="bgm-start" loop preload="none">
+        <source src="素材包/青翼XD - 故事的开始.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 场景一与猫导师对话BGM -->
+    <audio id="bgm-scene1" loop preload="none">
+        <source src="素材包/青翼XD - 初遇.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 探索场景BGM -->
+    <audio id="bgm-exploration" loop preload="none">
+        <source src="素材包/青翼XD - 宁静的野马湖.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 探索完毕后对话BGM -->
+    <audio id="bgm-scene4" loop preload="none">
+        <source src="素材包/青翼XD - 坚不可摧的纽带.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- 音效 -->
+    <audio id="click-sound">
+        <source src="click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="purr-sound">
+        <source src="purr.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html> 
