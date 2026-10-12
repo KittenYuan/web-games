@@ -16,7 +16,6 @@ let gameState = {
         missing: []
     },
     audioEnabled: true,
-    catGenerated: false
 };
 
 // 高性能视频优化管理器
@@ -423,7 +422,7 @@ const vnDialogues = {
         },
         {
             speaker: "猫导师",
-            text: "我感觉到一丝小小的...嗯...像是被微风轻轻绊了一下的感觉？",
+            text: '猫导师合上书，往旁边挪出一个位置。你可以先坐一会儿。',
             characterState: "talking"
         },
         {
@@ -562,6 +561,24 @@ const vnDialogues = {
     }
 };
 
+['A', 'B', 'C'].forEach(emotion => {
+    const opening = {
+        A: '累的时候，小风车也可以停下来。今天不用急着把所有事做完。',
+        B: '明天的事还没发生，身体却已经绷紧了。我们先让肩膀松一点。',
+        C: '想起一个人时，心里可能同时有暖意和难受。你不用只留下其中一种。'
+    }[emotion];
+    vnDialogues.scene2[emotion] = [
+        { speaker: '猫导师', text: opening, characterState: 'talking' },
+        { speaker: '猫导师', text: '现在，你更需要哪一种陪伴？', characterState: 'talking', showChoices: true,
+          choices: ['想做一点事。', '想把事情说出来。', '想安静待着。'] }
+    ];
+    vnDialogues.scene4[emotion] = [
+        { speaker: '猫导师', text: '猫导师把椅子拉回桌边。欢迎回来，不用急着告诉我探索有没有用。', characterState: 'talking' },
+        { speaker: '猫导师', text: '现在的感觉，更接近哪一种？', characterState: 'talking', showChoices: true,
+          choices: ['比刚才轻松一点。', '还没有，不过这里让我舒服些。', '我说不清，想再坐一会儿。'] }
+    ];
+});
+
 // 游戏数据
 const gameData = {
     scenes: {
@@ -684,134 +701,7 @@ const gameData = {
         }
     },
     
-    catGeneration: {
-        // 毛色基调（基于情绪）
-        bodies: {
-            tired: {
-                color: "linear-gradient(45deg, #87CEEB, #B0C4DE)",
-                colorType: "cool", // 冷色系
-                energy: "calm"
-            },
-            nervous: {
-                color: "linear-gradient(45deg, #FFD700, #FFA500)",
-                colorType: "warm", // 暖色系
-                energy: "alert"
-            },
-            missing: {
-                color: "linear-gradient(45deg, #FFB6C1, #FFC0CB)",
-                colorType: "warm", // 暖色系
-                energy: "gentle"
-            }
-        },
-        
-        // 体型姿态（基于积极程度 - 综合所有A/B/C选择）
-        postures: {
-            high: {
-                name: "活力昂首",
-                transform: "translateY(-5px)",
-                description: "昂首挺胸，充满活力"
-            },
-            medium: {
-                name: "适中姿态",
-                transform: "translateY(0px)",
-                description: "端坐平静，温和稳定"
-            },
-            low: {
-                name: "慵懒蜷坐",
-                transform: "translateY(3px) scale(0.95)",
-                description: "轻松蜷坐，安详惬意"
-            }
-        },
-        
-        // 花纹样式（基于应对方式）
-        patterns: {
-            A: "star-spots",      // 积极选择
-            B: "soft-stripes",    // 倾诉选择
-            C: "heart-patches"    // 安慰选择
-        },
-        
-        // 眼睛样式（基于领悟深度）
-        eyes: {
-            A: {
-                name: "明亮好奇",
-                color: "#FFD700",
-                effect: "brightness(1.2) drop-shadow(0 0 3px #FFD700)",
-                description: "明亮好奇的眼神"
-            },
-            B: {
-                name: "温柔深邃",
-                color: "#87CEEB",
-                effect: "brightness(1.1) drop-shadow(0 0 2px #87CEEB)",
-                description: "温柔深邃的眼神"
-            },
-            C: {
-                name: "平静安详",
-                color: "#DDA0DD",
-                effect: "brightness(1.0) drop-shadow(0 0 2px #DDA0DD)",
-                description: "平静安详的眼神"
-            }
-        },
-        
-        // 配饰系统（基于情绪 + 解谜物品）
-        accessories: {
-            tired: {
-                name: "小花发卡",
-                emoji: "🌸",
-                position: "top-left"
-            },
-            nervous: {
-                name: "勇气项链",
-                emoji: "💎",
-                position: "center"
-            },
-            missing: {
-                name: "温暖围巾",
-                emoji: "☁️",
-                position: "around-neck"
-            }
-        },
-        
-        // 特殊装饰（基于解谜找到的物品）
-        specialDecorations: {
-            tired: {
-                name: "蓝花光环",
-                emoji: "🌸",
-                color: "#87CEEB",
-                effect: "glow"
-            },
-            nervous: {
-                name: "勇气光芒",
-                emoji: "💎",
-                color: "#FFD700",
-                effect: "sparkle"
-            },
-            missing: {
-                name: "云朵包围",
-                emoji: "☁️",
-                color: "#FFB6C1",
-                effect: "float"
-            }
-        },
-        
-        // 最终印记（基于最终领悟）
-        finalTouch: {
-            A: {
-                name: "轻盈羽毛",
-                emoji: "🪶",
-                effect: "float-up"
-            },
-            B: {
-                name: "智慧书卷",
-                emoji: "📜",
-                effect: "glow-wisdom"
-            },
-            C: {
-                name: "感恩之心",
-                emoji: "💝",
-                effect: "heartbeat"
-            }
-        }
-    }
+
 };
 
 // 音效管理
@@ -1180,7 +1070,7 @@ const sceneManager = {
     async switchScene(sceneId) {
         if (this.isTransitioning) return;
         this.isTransitioning = true;
-        const loadingDuration = ({ 1: 10000, 3: 12000, 4: 10000, 5: 11000 })[sceneId] || 9000;
+        const loadingDuration = 7500;
         const targetScene = document.getElementById(`scene-${sceneId}`);
         if (!targetScene) {
             this.isTransitioning = false;
@@ -1188,11 +1078,17 @@ const sceneManager = {
         }
         loadingManager.show(sceneId, loadingDuration, false);
         vnSystem.cancelDialogue();
-        document.querySelectorAll('#new-continue-btn, #final-scene-btn').forEach(btn => btn.remove());
+        document.querySelectorAll('#new-continue-btn, #final-scene-btn, #note-scene-btn, #exploration-next').forEach(btn => btn.remove());
         document.querySelectorAll('video').forEach(video => video.pause());
         document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
 
-        const video = targetScene.querySelector('.video-background');
+        const explorationId = { A: 'exploration-tired', B: 'exploration-nervous', C: 'exploration-missing' }[gameState.playerChoices.emotion];
+        const video = sceneId === 3 ? document.getElementById(explorationId) : targetScene.querySelector('.video-background');
+        const bgm = document.getElementById(({ 0: 'bgm-start', 1: 'bgm-scene1', 3: 'bgm-exploration', 4: 'bgm-scene4', 5: 'bgm-scene4' })[sceneId]);
+        if (bgm) {
+            bgm.preload = 'auto';
+            if (bgm.networkState === HTMLMediaElement.NETWORK_EMPTY) bgm.load();
+        }
         const waitForVideo = video ? new Promise(resolve => {
             if (video.readyState >= 3 || video.error) return resolve();
             const ready = () => {
@@ -1211,13 +1107,13 @@ const sceneManager = {
         }));
         await Promise.all([
             new Promise(resolve => setTimeout(resolve, loadingDuration)),
-            waitForVideo,
+            Promise.race([waitForVideo, new Promise(resolve => setTimeout(resolve, 7000))]),
             waitForImages
         ]);
         targetScene.classList.add('active');
         gameState.currentScene = sceneId;
         if (video && !video.error) {
-            await video.play().then(() => new Promise(resolve => {
+            video.play().then(() => new Promise(resolve => {
                 if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(resolve);
                 else requestAnimationFrame(() => requestAnimationFrame(resolve));
             })).catch(() => {});
@@ -1528,34 +1424,8 @@ const sceneManager = {
     },
     
     initFinalScene() {
-        // 强制清除所有氛围效果，确保原版视频显示
         clearAllAtmosphereEffects();
-        
-        // 初始化最终场景的视频背景
-        const scene5Video = document.getElementById('scene5-video');
-        if (scene5Video) {
-            console.log('🎬 初始化最终场景视频 - 使用原版喵屋内部.mp4');
-            
-            // 确保视频没有任何滤镜
-            scene5Video.style.filter = 'none !important';
-            scene5Video.style.opacity = '1 !important';
-            scene5Video.style.transform = 'none !important';
-            
-            optimizeVideoPlayback();
-            
-            // 确保视频加载并播放
-            scene5Video.load();
-            scene5Video.play().catch(e => {
-                console.log('最终场景视频播放失败:', e);
-                setTimeout(() => {
-                    scene5Video.play().catch(err => console.log('重试播放失败:', err));
-                }, 500);
-            });
-        }
-        
-        setTimeout(() => {
-            this.generateCat();
-        }, 1000);
+        renderNote();
     },
     
     updateCatMentor(mentorId, style) {
@@ -1593,166 +1463,6 @@ const sceneManager = {
     
 
     
-    generateCat() {
-        const emotion = gameState.playerChoices.emotion;
-        const response = gameState.playerChoices.response;
-        const insight = gameState.playerChoices.insight;
-        const foundItems = gameState.playerChoices.foundItems;
-        
-        // 计算积极程度 (A选择多=high, B选择多=medium, C选择多=low)
-        const choices = [response, insight];
-        const aCount = choices.filter(choice => choice === 'A').length;
-        const bCount = choices.filter(choice => choice === 'B').length;
-        const cCount = choices.filter(choice => choice === 'C').length;
-        
-        let energyLevel = 'medium';
-        if (aCount >= 2) energyLevel = 'high';
-        else if (cCount >= 2) energyLevel = 'low';
-        
-        // 生成小猫
-        const generatedCat = document.getElementById('generated-cat');
-        const catBody = generatedCat.querySelector('.cat-body');
-        const catEyes = generatedCat.querySelector('.cat-eyes');
-        const catAccessories = generatedCat.querySelector('.cat-accessories-final');
-        
-        // 设置身体颜色和姿态
-        const bodyData = gameData.catGeneration.bodies[emotion];
-        const postureData = gameData.catGeneration.postures[energyLevel];
-        catBody.style.background = bodyData.color;
-        catBody.style.transform = postureData.transform;
-        
-        // 添加花纹
-        const pattern = gameData.catGeneration.patterns[response];
-        catBody.classList.add(pattern);
-        
-        // 设置眼睛样式
-        const eyeData = gameData.catGeneration.eyes[insight];
-        catEyes.style.background = eyeData.color;
-        catEyes.style.filter = eyeData.effect;
-        
-        // 添加主配饰
-        const accessory = gameData.catGeneration.accessories[emotion];
-        catAccessories.innerHTML = `
-            <div class="main-accessory" style="position: absolute; top: 5%; left: 50%; transform: translateX(-50%); font-size: 1.8rem; z-index: 15;">
-                ${accessory.emoji}
-            </div>
-        `;
-        
-        // 添加特殊装饰
-        const specialDecor = gameData.catGeneration.specialDecorations[emotion];
-        const specialElement = document.createElement('div');
-        specialElement.className = `special-decoration ${specialDecor.effect}`;
-        specialElement.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: ${specialDecor.color};
-            pointer-events: none;
-            z-index: 5;
-        `;
-        specialElement.textContent = specialDecor.emoji;
-        catBody.appendChild(specialElement);
-        
-        // 添加最终印记
-        const finalTouch = gameData.catGeneration.finalTouch[insight];
-        const finalElement = document.createElement('div');
-        finalElement.className = `final-touch ${finalTouch.effect}`;
-        finalElement.style.cssText = `
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            font-size: 1.5rem;
-            z-index: 20;
-        `;
-        finalElement.textContent = finalTouch.emoji;
-        catBody.appendChild(finalElement);
-        
-        // 保存生成信息到状态
-        gameState.generatedCat = {
-            emotion,
-            response,
-            insight,
-            energyLevel,
-            bodyData,
-            postureData,
-            eyeData,
-            accessory,
-            specialDecor,
-            finalTouch,
-            foundItems
-        };
-        
-        // 停止旋转动画
-        setTimeout(() => {
-            const generationAnimation = document.querySelector('.generation-animation');
-            generationAnimation.style.animation = 'none';
-            generationAnimation.style.background = 'transparent';
-            
-            gameState.catGenerated = true;
-            this.showFinalDialogue();
-        }, 3000);
-    },
-    
-    showFinalDialogue() {
-        const catInfo = gameState.generatedCat;
-        const foundItems = catInfo.foundItems || [];
-        
-        const finalDialogue = document.getElementById('final-dialogue-text');
-        const catDescription = document.getElementById('cat-description');
-        const farewellMessage = document.getElementById('farewell-message');
-        
-        finalDialogue.textContent = "为了纪念这次小小的旅程，让我送你一个特别的伙伴吧。它由你一路带来的'心绪星光'编织而成，会一直陪伴你喵。";
-        
-        // 生成详细小猫描述
-        const emotionNames = {tired: '疲惫', nervous: '紧张', missing: '思念'};
-        const responseNames = {A: '积极面对', B: '倾诉接纳', C: '寻求安慰'};
-        const insightNames = {A: '轻松明亮', B: '学习方法', C: '感谢温暖'};
-        const energyNames = {high: '活力昂首', medium: '适中姿态', low: '慵懒蜷坐'};
-        
-        catDescription.innerHTML = `
-            <div style="text-align: center; line-height: 1.8; font-size: 1.1rem;">
-                🐱 <strong>这就是你的心灵伙伴小猫！</strong><br><br>
-                
-                <div style="background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; margin: 10px 0;">
-                    💫 <strong>体型姿态：</strong>${catInfo.postureData.name}<br>
-                    <small style="color: #666;">${catInfo.postureData.description}</small>
-                </div>
-                
-                <div style="background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; margin: 10px 0;">
-                    🎨 <strong>毛色花纹：</strong>${catInfo.bodyData.colorType === 'warm' ? '温暖' : '清凉'}色调 + ${responseNames[catInfo.response]}花纹<br>
-                    <small style="color: #666;">带着${emotionNames[catInfo.emotion]}的印记</small>
-                </div>
-                
-                <div style="background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; margin: 10px 0;">
-                    👀 <strong>眼神特征：</strong>${catInfo.eyeData.name}<br>
-                    <small style="color: #666;">${catInfo.eyeData.description}</small>
-                </div>
-                
-                <div style="background: rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; margin: 10px 0;">
-                    💎 <strong>独特装饰：</strong><br>
-                    • ${catInfo.accessory.name} ${catInfo.accessory.emoji}<br>
-                    • ${catInfo.specialDecor.name} ${catInfo.specialDecor.emoji}<br>
-                    • ${catInfo.finalTouch.name} ${catInfo.finalTouch.emoji}<br>
-                    <small style="color: #666;">每一样都蕴含着你的心路历程</small>
-                </div>
-                
-                <div style="background: rgba(255, 182, 193, 0.2); padding: 15px; border-radius: 12px; margin: 15px 0;">
-                    ✨ <strong>心灵印记：</strong>${foundItems.length > 0 ? foundItems.map(item => item.name).join('、') : '温暖回忆'}的智慧 + ${insightNames[catInfo.insight]}的感悟<br>
-                    <small style="color: #666;">${foundItems.length > 0 ? '这些珍贵的心灵碎片将永远与你同在，在需要的时候给你力量和温暖。' : '虽然旅程短暂，但温暖的记忆已经深深印在心中。'}</small>
-                </div>
-                
-                <br><strong style="color: #ff69b4;">独一无二，就像你一样喵~ 💕</strong>
-            </div>
-        `;
-        
-        farewellMessage.textContent = "带着你的小伙伴，记住喵屋的温暖。当心绪微澜时，就看看它，或者...随时回来坐坐。你比你想象的更勇敢，更值得被温柔以待。再会了，亲爱的朋友，喵~❤️";
-    }
 };
 
 // 游戏主要函数
@@ -1773,6 +1483,17 @@ function startGame() {
     
     sceneManager.switchScene(1);
     
+}
+
+function showContinueButtonForExploration() {
+    const parent = document.getElementById('vn-dialogue');
+    document.getElementById('exploration-next')?.remove();
+    const button = document.createElement('button');
+    button.id = 'exploration-next';
+    button.className = 'vn-choice-btn';
+    button.textContent = '准备好了，去走走';
+    button.onclick = () => { button.remove(); sceneManager.switchScene(3); };
+    parent.appendChild(button);
 }
 
 function makeChoice(scene, choice) {
@@ -1828,12 +1549,14 @@ function makeChoice(scene, choice) {
                 setTimeout(() => {
                     const textContent = document.getElementById('vn-text-content');
                     if (textContent) {
-                        vnSystem.typeText(textContent, "很好，让我们通过一个小小的心灵探索来找到属于你的宁静时刻...");
-                        
-                        // 3秒后进入解谜场景
-                        setTimeout(() => {
-                            sceneManager.switchScene(3);
-                        }, 3000);
+                        const responses = {
+                            A: { A: '先试一件小事：找一个能让你停下来歇歇的东西。今天不用把全部事情做完。', B: '明天的挑战先放在明天。现在找一样东西，提醒自己只做第一步。', C: '可以先想一句你想对那个人说的话，不必立刻发出去。我们去找个能承载它的小东西。' },
+                            B: { A: '睡不好会让白天更难熬。谢谢你告诉我；先不用找原因，我们去找一个适合歇息的地方。', B: '怕搞砸的时候，每一步都像考试。这里不用交出正确答案，你可以慢慢来。', C: '很久没联系，想开口又怕打扰，是吗？你可以先把想说的话留给自己。' },
+                            C: { A: '那就先安静待着。我会在这里，不催你恢复精神。想走走时，我们再去花园。', B: '暂时躲一会儿也可以。猫导师把书放到一边。林间没有人等你交作业。', C: '我们不必猜那个人现在在哪里。你可以带着这份思念，安静看一会儿星星。' }
+                        };
+                        vnSystem.typeText(textContent, responses[choice][gameState.playerChoices.emotion], () => {
+                            showContinueButtonForExploration();
+                        });
                     }
                 }, 500);
             }
@@ -1857,11 +1580,12 @@ function makeChoice(scene, choice) {
                     console.log('🎯 开始显示最终对话');
                     
                     // 使用回调机制，确保在文字完全显示完成后才显示按钮
-                    vnSystem.typeText(textContent, "谢谢你和我分享这段心灵之旅~ 现在，让我们创造一只专属于你的心灵小猫吧！", () => {
+                    const feedback = { A: '轻松一点就好，不必把它变成今天必须达到的目标。', B: '谢谢你直说。没好转也没关系，我们可以把这段舒服的时间留下。', C: '说不清也可以。我给你留一张便笺，你想坐多久都行。' }[choice];
+                    vnSystem.typeText(textContent, feedback, () => {
                         console.log('🎯 文字显示完成，现在显示按钮');
                         console.log('🔍 当前游戏状态:', gameState);
                         console.log('🔍 当前场景:', gameState.currentScene);
-                        showFinalSceneButton();
+                        showContinueButtonForNote();
                     });
                 }
             }, 500);
@@ -2085,165 +1809,18 @@ function showContinueButton() {
 }
 
 // 显示进入最终场景的按钮
-function showFinalSceneButton() {
-    console.log('🎯 显示进入最终场景按钮 - 函数开始执行');
-    
-    // 检查当前场景状态
-    const currentScene = document.getElementById('scene-4');
-    console.log('🔍 场景4元素:', currentScene);
-    console.log('🔍 场景4是否可见:', currentScene ? currentScene.classList.contains('active') : '场景4不存在');
-    
-    // 删除现有按钮（如果有的话）
-    const oldBtn = document.getElementById('final-scene-btn');
-    if (oldBtn) {
-        console.log('🗑️ 删除已存在的按钮');
-        oldBtn.remove();
-    } else {
-        console.log('✅ 没有找到已存在的按钮，继续创建新按钮');
-    }
-    
-    // 创建进入最终场景的按钮
-    const finalBtn = document.createElement('button');
-    finalBtn.id = 'final-scene-btn';
-    finalBtn.innerHTML = `
-        <span style="margin-right: 8px;">开始创造心灵小猫</span>
-        <span style="opacity: 0.9;">💕</span>
-    `;
-    
-    // 设置按钮样式（对话框右下角，颜色稍深的淡雅风格）
-    finalBtn.style.cssText = `
-        position: absolute !important;
-        bottom: 15px !important;
-        right: 20px !important;
-        padding: 12px 20px !important;
-        background: rgba(255, 255, 255, 0.25) !important;
-        backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(255, 182, 193, 0.4) !important;
-        border-radius: 16px !important;
-        color: rgba(255, 105, 180, 0.9) !important;
-        font-size: 0.9rem !important;
-        font-weight: 400 !important;
-        cursor: pointer !important;
-        z-index: 999999 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2) !important;
-        transition: all 0.3s ease !important;
-        pointer-events: auto !important;
-        user-select: none !important;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
-        line-height: 1.4 !important;
-        text-align: center !important;
-        opacity: 1 !important;
-        letter-spacing: 0.3px !important;
-    `;
-    
-    // 添加fadeInSoft动画到CSS（如果不存在）
-    if (!document.querySelector('#fadeInSoftStyle')) {
-        const style = document.createElement('style');
-        style.id = 'fadeInSoftStyle';
-        style.textContent = `
-            @keyframes fadeInSoft {
-                0% {
-                    opacity: 0;
-                    transform: translateY(8px);
-                }
-                100% {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // 鼠标悬停效果（对话框右下角定位的悬停效果）
-    finalBtn.addEventListener('mouseenter', function() {
-        this.style.background = 'rgba(255, 255, 255, 0.35) !important';
-        this.style.borderColor = 'rgba(255, 182, 193, 0.6) !important';
-        this.style.transform = 'translateY(-2px) scale(1.03) !important';
-        this.style.color = 'rgba(255, 105, 180, 1) !important';
-        this.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.25) !important';
-    });
-    
-    finalBtn.addEventListener('mouseleave', function() {
-        this.style.background = 'rgba(255, 255, 255, 0.25) !important';
-        this.style.borderColor = 'rgba(255, 182, 193, 0.4) !important';
-        this.style.transform = 'translateY(0) scale(1) !important';
-        this.style.color = 'rgba(255, 105, 180, 0.9) !important';
-        this.style.boxShadow = '0 3px 15px rgba(0, 0, 0, 0.2) !important';
-    });
-    
-    // 绑定点击事件
-    finalBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🎨 进入最终场景！');
-        
-        // 添加点击效果
-        this.style.transform = 'translateY(1px) scale(0.97) !important';
-        this.style.boxShadow = '0 1px 8px rgba(0, 0, 0, 0.3) !important';
-        setTimeout(() => {
-            this.style.transform = 'translateY(0) scale(1) !important';
-            this.style.boxShadow = '0 3px 15px rgba(0, 0, 0, 0.2) !important';
-        }, 150);
-        
-        // 删除按钮并切换场景
-        setTimeout(() => {
-            this.remove();
-            // 清除所有氛围效果
-            clearAllAtmosphereEffects();
-            sceneManager.switchScene(5);
-        }, 300);
-    });
-    
-    console.log('🎨 按钮样式设置完成，准备添加到DOM');
-    
-    // 添加到场景4的对话框容器中
-    const dialogueContainer = document.getElementById('vn-dialogue-4');
-    console.log('🔍 查找对话框容器:', dialogueContainer);
-    
-    if (dialogueContainer) {
-        dialogueContainer.appendChild(finalBtn);
-        console.log('✅ 按钮已添加到对话框容器');
-        console.log('🔍 对话框子元素数量:', dialogueContainer.children.length);
-    } else {
-        // 备选方案：添加到场景4容器
-        const scene4 = document.getElementById('scene-4');
-        if (scene4) {
-            scene4.appendChild(finalBtn);
-            console.log('⚠️ 对话框容器未找到，按钮已添加到场景4容器');
-        } else {
-            document.body.appendChild(finalBtn);
-            console.log('⚠️ 所有容器都未找到，按钮已添加到body');
-        }
-    }
-    
-    console.log('✅ 进入最终场景按钮已创建，按钮ID:', finalBtn.id);
-    console.log('🔍 按钮元素本身:', finalBtn);
-    
-    // 验证按钮是否真的在DOM中
-    setTimeout(() => {
-        const checkBtn = document.getElementById('final-scene-btn');
-        console.log('🔍 验证阶段 - 查找按钮:', checkBtn);
-        
-        if (checkBtn) {
-            console.log('✅ 按钮验证成功：按钮存在于DOM中');
-            console.log('🎨 按钮样式:', checkBtn.style.cssText.substring(0, 100) + '...');
-            console.log('📍 按钮位置:', checkBtn.getBoundingClientRect());
-            console.log('👁️ 按钮可见性:', window.getComputedStyle(checkBtn).display);
-            console.log('🎯 按钮透明度:', window.getComputedStyle(checkBtn).opacity);
-        } else {
-            console.error('❌ 按钮验证失败：按钮不存在于DOM中');
-            // 再次查找所有可能的按钮
-            const allButtons = document.querySelectorAll('button');
-            console.log('🔍 页面中所有按钮:', allButtons);
-        }
-    }, 100);
+function showContinueButtonForNote() {
+    const scene = document.getElementById('scene-4');
+    document.getElementById('note-scene-btn')?.remove();
+    const button = document.createElement('button');
+    button.id = 'note-scene-btn';
+    button.className = 'vn-choice-btn';
+    button.textContent = '写下今天的便笺';
+    button.onclick = () => { button.remove(); sceneManager.switchScene(5); };
+    scene.querySelector('.vn-dialogue-container')?.appendChild(button);
 }
 
-// 继续到下一场景
+
 function continueToNextScene() {
     console.log('🎉 continueToNextScene 被调用！');
     audioManager.playClick();
@@ -2371,86 +1948,80 @@ function addMissEffect(area) {
     }, 2000);
 }
 
-function saveCat() {
-    if (!gameState.catGenerated) return;
-    
-    audioManager.playClick();
-    
-    // 创建画布来保存小猫图像
+function renderNote(selectedName) {
+    const choices = gameState.playerChoices;
+    const items = choices.foundItems;
+    const select = document.getElementById('note-item');
+    if (!selectedName) {
+        select.replaceChildren();
+        items.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.name;
+            option.textContent = item.name;
+            select.appendChild(option);
+        });
+    }
+    const item = items.find(entry => entry.name === (selectedName || select.value)) || items[0];
+    choices.noteItem = item?.name || '一段安静的时间';
+    const emotion = { A: '疲惫', B: '紧张', C: '思念' }[choices.emotion];
+    const need = { A: '想做一点事', B: '想把事情说出来', C: '想安静待着' }[choices.response];
+    document.getElementById('note-context').textContent = `今天带着${emotion}来到这里，你选择了${need}。`;
+    document.getElementById('note-message').textContent = {
+        A: '只做一个小步骤也可以。完成之后，记得给自己留一点空白。',
+        B: '你说出来的事情，我听见了。它不需要立刻被整理成一个答案。',
+        C: '安静待着也是一种需要。今天不用证明自己有多努力。'
+    }[choices.response];
+    document.getElementById('note-action').textContent = `带走${choices.noteItem}：${item?.description || '给自己留一分钟，不安排任务。'}`;
+    document.getElementById('note-status').textContent = '';
+    document.getElementById('note-download').hidden = true;
+}
+
+async function saveNote() {
+    const status = document.getElementById('note-status');
     const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
+    canvas.width = 800;
+    canvas.height = 1000;
     const ctx = canvas.getContext('2d');
-    
-    // 绘制背景
-    const gradient = ctx.createLinearGradient(0, 0, 400, 400);
-    gradient.addColorStop(0, '#FFD700');
-    gradient.addColorStop(1, '#FFB6C1');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 400, 400);
-    
-    // 绘制小猫身体
-    const emotion = gameState.playerChoices.emotion;
-    const bodyData = gameData.catGeneration.bodies[emotion];
-    
-    ctx.fillStyle = bodyData.color.replace('linear-gradient(45deg, ', '').replace(')', '').split(', ')[0];
-    ctx.beginPath();
-    ctx.ellipse(200, 200, 100, 120, 0, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // 绘制眼睛
-    ctx.fillStyle = '#FFD700';
-    ctx.beginPath();
-    ctx.arc(170, 180, 8, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(230, 180, 8, 0, 2 * Math.PI);
-    ctx.fill();
-    
-    // 绘制耳朵
-    ctx.fillStyle = bodyData.color.replace('linear-gradient(45deg, ', '').replace(')', '').split(', ')[0];
-    ctx.beginPath();
-    ctx.moveTo(160, 120);
-    ctx.lineTo(180, 80);
-    ctx.lineTo(200, 120);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.moveTo(200, 120);
-    ctx.lineTo(220, 80);
-    ctx.lineTo(240, 120);
-    ctx.fill();
-    
-    // 添加文字
-    ctx.fillStyle = '#2F2F2F';
-    ctx.font = '20px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('心灵伙伴小猫', 200, 350);
-    ctx.font = '16px Arial';
-    ctx.fillText('心语喵屋', 200, 375);
-    
-    // 下载图片
-    const link = document.createElement('a');
-    link.download = '心灵伙伴小猫.png';
-    link.href = canvas.toDataURL();
-    link.click();
-    
-    // 显示成功提示
-    const saveButton = document.querySelector('.save-button');
-    const originalText = saveButton.textContent;
-    saveButton.textContent = '保存成功！';
-    saveButton.style.background = 'linear-gradient(45deg, #90EE90, #98FB98)';
-    
-    setTimeout(() => {
-        saveButton.textContent = originalText;
-        saveButton.style.background = 'linear-gradient(45deg, var(--primary-color), var(--accent-color))';
-    }, 2000);
+    if (!ctx) { status.textContent = '此浏览器不能导出图片，可以截图保存便笺。'; return; }
+    ctx.fillStyle = '#fff8ee';
+    ctx.fillRect(0, 0, 800, 1000);
+    ctx.fillStyle = '#403831';
+    ctx.font = 'bold 40px sans-serif';
+    ctx.fillText('喵屋便笺', 60, 85);
+    const mentor = document.querySelector('.note-mentor');
+    await mentor.decode().catch(() => {});
+    if (mentor.naturalWidth) ctx.drawImage(mentor, 580, 30, 150, 180);
+    ctx.font = '26px sans-serif';
+    let y = 260;
+    for (const id of ['note-context', 'note-message', 'note-action']) {
+        let row = '';
+        for (const character of document.getElementById(id).textContent) {
+            if (ctx.measureText(row + character).width > 670) {
+                ctx.fillText(row, 60, y); y += 44; row = '';
+            }
+            row += character;
+        }
+        ctx.fillText(row, 60, y); y += 95;
+    }
+    ctx.font = '22px sans-serif';
+    ctx.fillText('不用马上好起来。这里仍有一个位置。', 60, 920);
+    try {
+        const data = canvas.toDataURL('image/png');
+        const link = document.getElementById('note-download');
+        link.href = data;
+        link.hidden = false;
+        link.click();
+        status.textContent = '已生成便笺并请求下载。没有下载时，可点击下面的链接或截图保存。';
+    } catch {
+        status.textContent = '图片导出不可用，请截图保存当前便笺。';
+    }
 }
 
 function restartGame() {
     audioManager.playClick();
     
     // 清理动态创建的按钮
-    const dynamicButtons = document.querySelectorAll('#new-continue-btn, #final-scene-btn');
+    const dynamicButtons = document.querySelectorAll('#new-continue-btn, #final-scene-btn, #note-scene-btn, #exploration-next');
     dynamicButtons.forEach(btn => btn.remove());
     
     // 隐藏加载页面（如果正在显示）
@@ -2475,8 +2046,7 @@ function restartGame() {
             missing: []
         },
         audioEnabled: gameState.audioEnabled,
-        catGenerated: false
-    };
+        };
     
     // 重置氛围效果
     resetAtmosphereEffects();
@@ -3108,7 +2678,7 @@ function testButtonDisplay() {
     }
     
     // 调用按钮显示函数
-    showFinalSceneButton();
+    showContinueButtonForNote();
 }
 
 // 测试BGM播放功能

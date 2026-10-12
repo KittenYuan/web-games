@@ -88,7 +88,7 @@
             position: relative; 
             width: 70%; 
             height: 100%; 
-            background: url('素材包/效率中枢.png') center center/cover no-repeat;
+            background: url('素材包/效率中枢.webp') center center/cover no-repeat;
             overflow: hidden; 
         }
         .game-world::after {
@@ -231,7 +231,7 @@
             top: 0;
             left: 0;
             z-index: 0;
-            background: url('素材包/控制台.png') center center/cover no-repeat;
+            background: url('素材包/控制台.webp') center center/cover no-repeat;
             overflow: hidden;
         }
         
@@ -1100,7 +1100,7 @@
         
         /* 终幕剧情样式 */
         .epilogue-scene {
-            background: url('素材包/控制台.png') center center/cover no-repeat;
+            background: url('素材包/控制台.webp') center center/cover no-repeat;
             position: relative;
             overflow: hidden;
         }
@@ -2180,7 +2180,7 @@
     <!-- 主菜单场景 -->
     <div class="scene main-menu-scene active" id="mainMenuScene">
         <div class="main-menu-bg">
-            <video id="menuBackgroundVideo" src="素材包/背景动态.mp4" autoplay loop muted playsinline preload="auto"></video>
+            <video id="menuBackgroundVideo" src="素材包/背景动态.web.mp4" poster="素材包/背景动态.jpg" autoplay loop muted playsinline preload="metadata"></video>
         </div>
         <div class="main-menu-content">
             <div class="main-title">记忆碎片：数字乡愁</div>
@@ -2196,7 +2196,7 @@
         
         <!-- 角色立绘区域 -->
         <div class="character-area">
-            <img loading="eager" fetchpriority="high" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="characterSprite">
+            <img loading="eager" fetchpriority="high" decoding="async" src="素材包/像素风主角已抠.webp" alt="零" class="character-sprite" id="characterSprite">
         </div>
         
         <!-- 对话框区域 -->
@@ -2215,14 +2215,7 @@
         </div>
         
         <!-- 结局弹窗 -->
-        <div class="ending-modal" id="endingModal" style="display: none;">
-            <div class="ending-title" id="endingTitle"></div>
-            <div class="ending-content" id="endingContent"></div>
-            <div class="ending-buttons">
-                <button class="ending-btn" id="endingRestartBtn">重新开始</button>
-                <button class="ending-btn" id="endingMainMenuBtn">返回主菜单</button>
-            </div>
-        </div>
+        <div class="ending-modal" id="endingModal" style="display: none;"></div>
         
 
     </div>
@@ -2238,7 +2231,7 @@
         <div class="game-content">
             <div class="game-world" id="gameWorld">
                 <div class="scene-description">效率中枢：数据处理的神经中枢，冰冷的金属架构中流淌着数字的血液，每一个节点都承载着时代的记忆碎片。</div>
-                <div class="player" id="player"><img src="素材包/像素风主角已抠.png" id="playerPortrait" alt="主角" loading="eager" fetchpriority="high" decoding="async"></div>
+                <div class="player" id="player"><img src="素材包/像素风主角已抠.webp" id="playerPortrait" alt="主角" loading="eager" fetchpriority="high" decoding="async"></div>
                 
                 <!-- NPC和互动元素 -->
                 <div class="npc" id="npc" style="display: none;">
@@ -2262,15 +2255,15 @@
                 </div>
                 
                 <div class="interactive-object" id="qiqi" style="display: none;">
-                    <div class="object-icon"><img loading="lazy" decoding="async" src="素材包/小狗奇.png" alt="奇奇" style="width: 40px; height: 40px; object-fit: contain;"></div>
+                    <div class="object-icon"><img loading="lazy" decoding="async" src="素材包/小狗奇.webp" alt="奇奇" style="width: 40px; height: 40px; object-fit: contain;"></div>
                     <div class="object-label">奇奇</div>
                 </div>
                 
-                <div class="memory-fragment fragment-1" data-id="1"><img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-2" data-id="2"><img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-3" data-id="3"><img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-4" data-id="4"><img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;"></div>
-                <div class="memory-fragment fragment-5" data-id="5"><img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-1" data-id="1"><img loading="lazy" decoding="async" src="素材包/软盘驱动器.webp" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-2" data-id="2"><img loading="lazy" decoding="async" src="素材包/卡式录音带.webp" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-3" data-id="3"><img loading="lazy" decoding="async" src="素材包/寻呼机.webp" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-4" data-id="4"><img loading="lazy" decoding="async" src="素材包/传真机.webp" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;"></div>
+                <div class="memory-fragment fragment-5" data-id="5"><img loading="lazy" decoding="async" src="素材包/CD光盘.webp" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;"></div>
 
                 <button class="scene-switch-btn" id="sceneSwitchBtn">前往消费幻境</button>
                 <button class="scene-switch-btn" id="sceneSwitchBtn3" style="display:none; position: absolute; bottom: 70px; right: 20px;">前往遗忘回廊</button>
@@ -2347,14 +2340,7 @@
         </div>
     </div>
     <!-- 完成界面 -->
-    <div class="scene completed-scene" id="completedScene">
-        <div class="completed-scene-bg"></div>
-        <div class="completed-content">
-            <div class="completed-message">记忆重组完成！<br>数字乡愁已唤醒</div>
-            <button class="restart-btn" id="restartBtn">再次探索</button>
-            <button class="epilogue-btn" id="epilogueBtn">进入终幕</button>
-        </div>
-    </div>
+        <div class="scene completed-scene" id="completedScene" style="display:none"></div>
     
     <!-- 终幕剧情场景 -->
     <div class="scene epilogue-scene" id="epilogueScene">
@@ -2364,7 +2350,7 @@
         
         <!-- 角色立绘区域 -->
         <div class="character-area">
-            <img loading="lazy" decoding="async" src="素材包/像素风主角已抠.png" alt="零" class="character-sprite" id="epilogueCharacterSprite">
+            <img loading="lazy" decoding="async" src="素材包/像素风主角已抠.webp" alt="零" class="character-sprite" id="epilogueCharacterSprite">
         </div>
         
         <!-- 对话框区域 -->
@@ -2383,15 +2369,7 @@
         </div>
         
         <!-- 终幕结局弹窗 -->
-        <div class="ending-modal" id="epilogueEndingModal" style="display: none;">
-            <div class="ending-title" id="epilogueEndingTitle"></div>
-            <div class="ending-content" id="epilogueEndingContent"></div>
-            <div class="ending-buttons">
-                <button class="ending-btn" id="epilogueRestartBtn">重新开始</button>
-                <button class="ending-btn" id="epilogueMainMenuBtn">返回主菜单</button>
-                <button class="ending-btn" id="epilogueTributeBtn">致敬过期未来</button>
-            </div>
-        </div>
+        <div class="ending-modal" id="epilogueEndingModal" style="display: none;"></div>
     </div>
     
     <!-- 致敬页面场景 -->
@@ -2992,6 +2970,137 @@
         ]
     };
     
+    const line = (text, type = 'dialog', extra = {}) => ({ text, type, ...extra });
+    const memoryScene = (name, dialogs, extra = {}) => ({ name, dialogs, ...extra });
+    prologueData.scenes = [
+        memoryScene('opening', [
+            line('2099年。新元界将私人记忆按使用频率分类，长期无人访问的记录会被送往隔离区，等待销毁。', 'system'),
+            line('我是零，注册编号137-Zero。夜班记忆焚化师。'),
+            line('培训时，他们清除了我的私人记忆。理由是：操作员不该对待销毁文件产生感情。'),
+            line('今天的队列里有一封没发出去的短信，还有一张拍糊的猫照片。文件很小，删除确认却按了两次。'),
+            line('我把光标停在下一份记录上。', 'dialog', { choices: [
+                { text: '先看一眼文件备注，再确认销毁。', action: 'sentimental' },
+                { text: '先检查处理记录，确认有没有误删。', action: 'cynical' }
+            ] })
+        ], { effects: ['employeeCard'] }),
+        memoryScene('daily_routine', [
+            line('队列最末多了一段未登记的音频。不是警报。有人在唱生日歌。'),
+            line('来源：旧式卡式录音带转录。录制年份：2078。接收者：小零。', 'system'),
+            line('录音里的人叫我的名字。不是编号。'),
+            line('系统要求处理异常。', 'dialog', { choices: [
+                { text: '先切断自动删除，检查录音来源。', action: 'hitHeadphone' },
+                { text: '上报格式异常，争取一次人工复核。', action: 'reportFault' }
+            ] })
+        ]),
+        memoryScene('unused_service', []),
+        memoryScene('tape_discovery', [
+            line('人工复核队列已关闭。文件将随本班次结束而销毁。', 'system'),
+            line('耳机里，那个声音停了一下，像是在等一个孩子把蜡烛吹灭。'),
+            line('我在文件边缘发现一行手写标签：给小零的十岁生日。'),
+            line('旧介质可以录下新的声音。2078年，有人仍在用磁带。'),
+            line('这段录音比我的入职记录早十九年。', 'dialog', { choices: [
+                { text: '隔离录音，暂停销毁，读取它的标签。', action: 'tapeRust' },
+                { text: '保留索引，核对它为什么被标记为无用。', action: 'deleteTape' }
+            ] })
+        ]),
+        memoryScene('tape_message', [
+            line('标签背面是一行更小的字：妈妈录，等你长大再听。', 'message'),
+            line('我不记得她。可听到她笑的时候，我知道下一句会唱错一个字。'),
+            line('关联记忆被分存在三个隔离区：效率中枢、消费幻境、遗忘回廊。', 'system'),
+            line('坟场保存的是记忆重建。那里的房间和人物来自不同年代，不是仍活在2099年的居民。', 'system')
+        ]),
+        memoryScene('final_choice', [
+            line('未经许可导出隔离区记忆，将撤销操作员资格，并永久限制外部访问。', 'system'),
+            line('我可以假装没听见。但明早队列清空后，就不会再有人叫我小零了。'),
+            line('先进去。找到完整录音，再决定怎么把它带出来。', 'dialog', { choices: [
+                { text: '复制复核权限，进入隔离区寻找关联记录。', action: 'keepTape' }
+            ] })
+        ]),
+        memoryScene('tape_absorption', [
+            line('临时权限已复制。自动销毁延后至交班。', 'system'),
+            line('我第一次没有按文件大小排序。'),
+            line('正在进入记忆隔离区。', 'system', { effects: ['loadingScreen'] })
+        ])
+    ];
+    epilogueData.scenes = [
+        memoryScene('awakening', [
+            line('三个区的关联记录拼在一起。2078年，十岁生日。录音者：母亲。'),
+            line('她唱错了一个音，停下来笑。我在录音里说：没关系，再唱一次。'),
+            line('原来我等的不是一个正确的版本。'),
+            line('2078年留下的录音，2097年被清除的私人记忆。中间十九年，我曾经有过一段没有编号的生活。'),
+            line('已找到原主删除授权：无。清理原因：低访问频率。', 'system')
+        ]),
+        memoryScene('realization', [
+            line('交班倒计时开始了。张师傅的第一份程序、小意和奇奇的记录，也在销毁队列里。'),
+            line('不是每个人都想保留过去。但至少该由他们自己决定。'),
+            line('我把生日录音从队列里移出来。还有两种办法能处理剩下的记录。')
+        ]),
+        memoryScene('choice', [
+            line('隐藏备份可以躲过本次审查；公开申诉可以让原主重新取得记录，但会暴露操作员身份。', 'system'),
+            line('我只有这次交班前的权限。', 'dialog', { choices: [
+                { text: '伪造销毁记录，隐藏备份；暂时保住记忆。', action: 'continueDestroyer' },
+                { text: '发送归还申请，公开无授权清理记录；承担身份暴露。', action: 'becomeGuardian' }
+            ] })
+        ]),
+        memoryScene('public_return', [
+            line('我提交原主复核申请，把清理日志发送到公共审计频道。私人录音没有公开。'),
+            line('身份验证：137-Zero。操作员资格已暂停。原主复核已受理，销毁队列冻结。', 'system'),
+            line('屏幕不再接受我的指令。至少，也不再继续删除。'),
+            line('我把最后一次访问权限留给那首歌。', 'dialog')
+        ], { next: 5 }),
+        memoryScene('hidden_archive', [
+            line('我在报表里写：介质损坏，销毁完成。把备份藏进那台没人再检查的旧驱动器。'),
+            line('交班审查通过。隐藏记录无法被原主访问，仍需后续迁移。', 'system'),
+            line('这不算把它们送回家。我得回来，把剩下的事做完。'),
+            line('今夜，先让那首歌留到天亮。')
+        ], { next: 5 }),
+        memoryScene('final_message', [
+            line('录音继续。母亲问：许了什么愿？'),
+            line('十岁的我说：明年你还给我唱。'),
+            line('我摘下工牌，在备份备注里写下自己的名字。'),
+            line('零。今天，先记住这一件事。')
+        ])
+    ];
+    const fragmentStories = [
+        [
+            '常见的3.5英寸高密度软盘容量为1.44MB，不同规格容量不同。这只驱动器读出张师傅第一份程序的备份；目录角落还有一条2078年录音的迁移索引。',
+            '卡式录音带可以反复录制，播放和保存过程中也会磨损。这盘磁带的标签写着“小零十岁生日，妈妈录”。录制日期是2078年，旧介质并不意味着录音来自上世纪。',
+            '寻呼机接收号码或短消息，回复通常需要另找电话。一条保存的留言写着“晚点回来也没关系，蛋糕等你”。接收人编号与磁带索引相同。',
+            '传真机通过通信线路传送文档图像。纸上是旧档案的迁移回执：私人记忆清除于2097年；原主授权一栏为空。',
+            'CD曾用于音乐、软件和数据分发。这张盘保存了隔离区旧目录。张师傅留下备注：格式可以换，原主的名字别一起删掉。'
+        ],
+        [
+            '早期消费级VR设备受分辨率、延迟与佩戴舒适度限制。重建场景里的广告仍在循环，小意却只在找她的奇奇。',
+            '早期触屏移动设备采用过不同屏幕和输入方式，不能归为同一种“首款手机”。这台设备里有一张购买录音带的订单，年份2078，收件人是零的母亲。',
+            '部分早期数码相机使用软盘等介质保存照片。这张低分辨率照片里，一个孩子站在生日蛋糕旁，桌边正是那台录音机。',
+            '早期MP3播放器容量有限，能存多少首歌取决于容量和编码。这份播放列表只留了一首生日歌，文件备注是“搬家也别删”。',
+            '电子宠物需要喂食、清洁等照料，并非最早的所有虚拟养成游戏。小意把宠物蛋和奇奇放在一起；她保存的不是商品型号，而是一起长大的日子。'
+        ],
+        [
+            '拨号调制解调器通过电话线路连接网络，速度与线路及标准有关。断续的传输日志记录着：2078年录音已成功转存，原主姓名为零。',
+            'VHS录像带常用于家庭录像，长度随制式和录制模式而异。生日影像里，母亲按下录音键，然后说：小零，等你长大再听。',
+            'CRT是电视显示技术，遥控器型号与功能各不相同。生日影像里，小零用它关掉电视，说今天只想听妈妈唱歌。',
+            'Game Boy使用可更换卡带，部分游戏支持存档或密码续关。这张卡带的标签写着“十岁生日”。存档名只有一个字：零。',
+            '电子宠物的外形和照料功能因产品而异。这份旧备份包含生日录音的末尾：孩子让唱错音的母亲再唱一次。完整关联记录已找齐。'
+        ]
+    ];
+    [gameState.fragments, gameState.scene2Fragments, gameState.scene3Fragments].forEach((items, scene) => {
+        items.forEach((item, index) => { item.description = fragmentStories[scene][index]; });
+    });
+    gameState.npcs.scene1.description = '一位保存于上世纪末的程序员记忆投影。他在效率中枢维护旧格式目录，并不知道外面的时间已经到了2099年。';
+    Object.assign(gameState.npcs.scene1.dialogues, {
+        first: '我是这里的旧目录维护员。你带来的录音是2078年的，不是我的年代。我们先查它怎样被迁进来的。',
+        computer: '这台电脑保留了旧格式索引。帮我恢复读取，我们就能核对录音标签。',
+        fragment: '程序换了多少代，名字也不该被迁移工具顺手删掉。磁带的关联目录在消费幻境。'
+    });
+    gameState.npcs.scene2.title = '保存于千禧年前后的童年记忆投影';
+    gameState.npcs.scene2.description = '小意来自千禧年前后的童年记忆。她寻找的是发条电子小狗奇奇，不是2099年的居民。';
+    Object.assign(gameState.npcs.scene2.dialogues, {
+        first: '你在找一段录音？我也在找奇奇。大人说它坏了，可以换新的。可新的不会记得陪我等过多少次回家。',
+        qiqifound: '你找到它了！谢谢。奇奇和宠物蛋是不同的东西，我都想留下。那边的相机里还有你要找的生日照片。',
+        fragment: '买了新的，也不一定要扔掉旧的。要不要留下，应该先问它的主人吧。'
+    });
+
     // 终幕剧情控制
     function startEpilogue() {
         showScene('epilogueScene');
@@ -3017,7 +3126,11 @@
             }
             
             // 进入下一个场景
-            epilogueData.currentStep++;
+            if (currentScene.next !== undefined) {
+                epilogueData.currentStep = currentScene.next;
+            } else {
+                epilogueData.currentStep++;
+            }
             epilogueData.currentDialog = 0;
             if (epilogueData.currentStep < epilogueData.scenes.length) {
                 showNextEpilogueDialog();
@@ -3123,30 +3236,7 @@
     }
     
     function showEpilogueEndingScreen() {
-        const endingModal = document.getElementById('epilogueEndingModal');
-        const endingTitle = document.getElementById('epilogueEndingTitle');
-        const endingContent = document.getElementById('epilogueEndingContent');
-        
-        let title = '';
-        let content = '';
-        
-        switch(epilogueData.ending) {
-            case 'memory_guardian':
-                title = '记忆守护者';
-                content = '你选择了成为记忆的守护者，保护那些承载着人类情感的老物件。虽然面临风险，但你知道这是正确的选择。真正的进步是在前进的路上，带着过去的温暖和智慧。';
-                break;
-            case 'conflicted_destroyer':
-                title = '内心矛盾的焚化师';
-                content = '你选择了继续做记忆焚化师，但那些收集的记忆碎片已经在你的心中留下了痕迹。即使继续工作，这些记忆也会永远留在你的心里。';
-                break;
-            default:
-                title = '记忆之旅';
-                content = '感谢你陪伴零完成了这段记忆之旅。愿我们都能在数字化的浪潮中，保持内心的温度。';
-        }
-        
-        endingTitle.textContent = title;
-        endingContent.textContent = content;
-        endingModal.style.display = 'block';
+        showTributeScene();
     }
     
     function clearEpilogueEffects() {
@@ -3186,6 +3276,8 @@
         prologueData.rustLevel = 0;
         prologueData.ending = null;
         prologueData.hasTape = false;
+        prologueData.reported = false;
+        prologueData.indexOnly = false;
         showNextDialog();
     }
     
@@ -3337,35 +3429,6 @@
         showNextEpilogueDialog();
     };
     
-    // 终幕结局按钮事件
-    document.getElementById('epilogueRestartBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        document.getElementById('epilogueEndingModal').style.display = 'none';
-        resetGame();
-    };
-    
-    document.getElementById('epilogueMainMenuBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        document.getElementById('epilogueEndingModal').style.display = 'none';
-        showScene('mainMenuScene');
-    };
-    
-    // 致敬页面按钮事件
-    document.getElementById('epilogueTributeBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        document.getElementById('epilogueEndingModal').style.display = 'none';
-        showTributeScene();
-    };
-    
     function handlePrologueChoice(action) {
         switch(action) {
             case 'sentimental':
@@ -3384,12 +3447,16 @@
                 showNextDialog();
                 break;
             case 'reportFault':
-                prologueData.ending = 'corporate_slave';
-                showEndingScreen();
+                prologueData.reported = true;
+                prologueData.currentStep = 3;
+                prologueData.currentDialog = 0;
+                showNextDialog();
                 break;
             case 'deleteTape':
-                prologueData.ending = 'delete_tape';
-                showEndingScreen();
+                prologueData.indexOnly = true;
+                prologueData.currentStep = 4;
+                prologueData.currentDialog = 0;
+                showNextDialog();
                 break;
             case 'tapeRust':
                 prologueData.rustLevel += 10;
@@ -3437,57 +3504,8 @@
         }
     }
     
-    function showEndingModal(title, content, titleColor) {
-        const endingModal = document.getElementById('endingModal');
-        const endingTitle = document.getElementById('endingTitle');
-        const endingContent = document.getElementById('endingContent');
-        
-        endingTitle.textContent = title;
-        endingTitle.style.color = titleColor;
-        endingContent.innerHTML = content;
-        
-        // 设置按钮事件
-        document.getElementById('endingRestartBtn').onclick = function() {
-            endingModal.style.display = 'none';
-            handlePrologueChoice('restart');
-        };
-        
-        document.getElementById('endingMainMenuBtn').onclick = function() {
-            endingModal.style.display = 'none';
-            handlePrologueChoice('mainMenu');
-        };
-        
-        endingModal.style.display = 'block';
-    }
-    
-    function showEndingScreen() {
-        const dialogName = document.getElementById('dialogName');
-        const dialogText = document.getElementById('dialogText');
-        const continueBtn = document.getElementById('continueBtn');
-        const choiceModal = document.getElementById('choiceModal');
-        
-        clearPrologueEffects();
-        continueBtn.style.display = 'none';
-        choiceModal.style.display = 'none';
-        
-        switch(prologueData.ending) {
-            case 'corporate_slave':
-                showEndingModal('达成结局：又是捡垃圾的一天', `
-                    <p style="color: #cbd5e1; line-height: 1.6;">你的大脑清爽如新，耳机修好了，昨天想申请涨薪的念头也消失了。</p>
-                    <p style="color: #7dd3fc; font-weight: bold; margin-top: 15px;">效率评级：SS</p>
-                `, '#94a3b8');
-                break;
-            case 'delete_tape':
-                showEndingModal('达成结局：夜班压力太大了', `
-                    <p style="color: #cbd5e1; line-height: 1.6;">你删除了异常数据，掌心锈迹消退</p>
-                    <p style="color: #cbd5e1; line-height: 1.6;">夜班时总控制台循环播放《生日快乐》，全楼同事骂你幻听</p>
-                `, '#fbbf24');
-                break;
-        }
-        
-        // 结局现在通过showEndingModal函数显示，不需要额外的选择按钮
-    }
-    
+    function showEndingScreen() { handlePrologueAction('startGame'); }
+
     function applyPrologueEffects(effects) {
         const scene = document.getElementById('prologueScene');
         
@@ -3514,7 +3532,7 @@
                         <div>姓名：零</div>
                         <div>职业：记忆焚化师Ⅲ级</div>
                         <div style="color: #fbbf24; font-size: 12px; margin-top: 8px;">"删除过去，提速未来！"</div>
-                        <div style="color: #94a3b8; font-size: 10px;">连续三年荣获"无情效率奖"</div>
+                        <div style="color: #94a3b8; font-size: 10px;">本年度荣获"无情效率奖"</div>
                     `;
                     cardEffect.id = 'employeeCard';
                     scene.appendChild(cardEffect);
@@ -3903,25 +3921,6 @@
             audioManager.playClick();
         }
     };
-    // 完成界面按钮
-    document.getElementById('restartBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        showScene('mainMenuScene');
-    };
-    
-    // 进入终幕按钮事件
-    document.getElementById('epilogueBtn').onclick = function() {
-        // 播放点击音效
-        if (audioManager) {
-            audioManager.playClick();
-        }
-        startEpilogue();
-    };
-    
-    // 致敬页面返回按钮事件
     document.getElementById('tributeReturnBtn').onclick = function() {
         // 播放点击音效
         if (audioManager) {
@@ -3941,7 +3940,7 @@
         gameState.isCollecting = false;
         // 重置背景图片
         const gameWorld = document.getElementById('gameWorld');
-        gameWorld.style.backgroundImage = 'url("素材包/效率中枢.png")';
+        gameWorld.style.backgroundImage = 'url("素材包/效率中枢.webp")';
         
         // 渲染场景1的碎片
         renderFragments();
@@ -4102,7 +4101,8 @@
                     showMessage('场景2完成！可以前往下一个场景了。', 3000);
                 } else {
                     // 第三个场景完成，显示完成界面
-                    showScene('completedScene');
+                    closeAllModals();
+                    startEpilogue();
                 }
             }
         }, 400);
@@ -4133,23 +4133,23 @@
                 
                 // 显示对应的图片
                 const fragmentImages = gameState.currentScene === 1 ? [
-                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.webp" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.webp" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.webp" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/传真机.webp" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.webp" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
                 ] : gameState.currentScene === 2 ? [
-                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.webp" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.webp" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/数码相机.webp" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.webp" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
                 ] : gameState.currentScene === 3 ? [
-                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.webp" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.webp" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.webp" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.webp" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
                 ] : [];
                 slots[i].innerHTML = fragmentImages[fragmentIndex];
                 
@@ -4216,29 +4216,29 @@
         let fragmentImage = '';
         if (gameState.currentScene === 1) {
             const scene1Images = [
-                '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.webp" alt="软盘驱动器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/卡式录音带.webp" alt="卡式录音带" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/寻呼机.webp" alt="寻呼机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/传真机.webp" alt="传真机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/CD光盘.webp" alt="CD光盘" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene1Images[fragmentId-1];
         } else if (gameState.currentScene === 2) {
             const scene2Images = [
-                '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.webp" alt="虚拟现实头盔" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/智能手机原型.webp" alt="智能手机原型" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/数码相机.webp" alt="数码相机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/MP3播放器.webp" alt="MP3播放器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="电子宠物蛋" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene2Images[fragmentId-1];
         } else if (gameState.currentScene === 3) {
             const scene3Images = [
-                '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                '<img loading="lazy" decoding="async" src="素材包/调制调解器.webp" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/vhs录像带.webp" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.webp" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.webp" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
             ];
             fragmentImage = scene3Images[fragmentId-1];
         }
@@ -4304,7 +4304,7 @@
         gameState.isCollecting = false;
         // 更新背景图片（如有可用图片可替换）
         const gameWorld = document.getElementById('gameWorld');
-        gameWorld.style.backgroundImage = 'url("素材包/遗忘回廊.png")';
+        gameWorld.style.backgroundImage = 'url("素材包/遗忘回廊.webp")';
         // 渲染场景3的碎片
         renderFragments();
         // 重置记忆树
@@ -4435,7 +4435,7 @@
             const title = npc.querySelector('.npc-title');
             
             if (avatar) {
-                avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
+                avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.webp" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
             }
             if (name) {
                 name.textContent = gameState.npcs.scene2.name;
@@ -4890,7 +4890,7 @@
                 <button onclick="switchToScene(2)">跳转到场景2 (消费幻境)</button>
                 <button onclick="switchToScene(3)">跳转到场景3 (遗忘回廊)</button>
                 <button onclick="showScene('mainMenuScene')">跳转到主菜单</button>
-                <button onclick="showScene('completedScene')">跳转到完成界面</button>
+                <button onclick="startEpilogue()">跳转到完成界面</button>
                 <hr style="margin: 10px 0; border-color: #555;">
                 <label>设置收集进度:</label>
                 <input type="number" id="devProgress" min="0" max="5" value="0" placeholder="0-5">
@@ -4982,7 +4982,7 @@
         
         // 重置背景图片
         const gameWorld = document.getElementById('gameWorld');
-        gameWorld.style.backgroundImage = 'url("素材包/效率中枢.png")';
+        gameWorld.style.backgroundImage = 'url("素材包/效率中枢.webp")';
         
         // 渲染场景1的碎片
         renderFragments();
@@ -5036,7 +5036,7 @@
         
         // 更新背景图片
         const gameWorld = document.getElementById('gameWorld');
-        gameWorld.style.backgroundImage = 'url("素材包/消费幻境.png")';
+        gameWorld.style.backgroundImage = 'url("素材包/消费幻境.webp")';
         
         // 渲染场景2的碎片
         renderFragments();
@@ -5097,7 +5097,7 @@
         gameState.isCollecting = false;
         // 更新背景图片（如有可用图片可替换）
         const gameWorld = document.getElementById('gameWorld');
-        gameWorld.style.backgroundImage = 'url("素材包/遗忘回廊.png")';
+        gameWorld.style.backgroundImage = 'url("素材包/遗忘回廊.webp")';
         // 渲染场景3的碎片
         renderFragments();
         // 重置记忆树
@@ -5151,7 +5151,8 @@
                 } else if (gameState.currentScene === 2) {
                     document.getElementById('sceneSwitchBtn3').style.display = 'block';
                 } else {
-                    showScene('completedScene');
+                    closeAllModals();
+                    startEpilogue();
                 }
             }
             
@@ -5189,7 +5190,7 @@
             document.getElementById('sceneSwitchBtn3').style.display = 'block';
             showMessage('场景2完成！可以前往下一个场景了。', 3000);
         } else {
-            showScene('completedScene');
+            startEpilogue();
         }
         showMessage('所有碎片已解锁！');
     }
@@ -5327,29 +5328,29 @@
             // 设置碎片内容
             if (gameState.currentScene === 1) {
                 const fragmentImages = [
-                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.png" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.png" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.png" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/传真机.png" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.png" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/软盘驱动器.webp" alt="软盘驱动器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/卡式录音带.webp" alt="卡式录音带" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/寻呼机.webp" alt="寻呼机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/传真机.webp" alt="传真机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CD光盘.webp" alt="CD光盘" style="width: 100%; height: 100%; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             } else if (gameState.currentScene === 2) {
                 const fragmentImages = [
-                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.png" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.png" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/数码相机.png" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.png" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/虚拟现实头盔.webp" alt="虚拟现实头盔" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/智能手机原型.webp" alt="智能手机原型" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/数码相机.webp" alt="数码相机" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/MP3播放器.webp" alt="MP3播放器" style="width: 100%; height: 100%; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="电子宠物蛋" style="width: 100%; height: 100%; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             } else if (gameState.currentScene === 3) {
                 const fragmentImages = [
-                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.png" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.png" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.png" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.png" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
-                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.png" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
+                    '<img loading="lazy" decoding="async" src="素材包/调制调解器.webp" alt="调制解调器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/vhs录像带.webp" alt="VHS录像带" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/CRT电视遥控器.webp" alt="CRT电视遥控器" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/掌上游戏机.webp" alt="掌上游戏机" style="width: 40px; height: 40px; object-fit: contain;">',
+                    '<img loading="lazy" decoding="async" src="素材包/电子宠物蛋.webp" alt="翻盖电子宠物" style="width: 40px; height: 40px; object-fit: contain;">'
                 ];
                 fragElement.innerHTML = fragmentImages[index];
             }
@@ -5463,7 +5464,7 @@
                 const title = npc.querySelector('.npc-title');
                 
                 if (avatar) {
-                    avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
+                    avatar.innerHTML = '<img loading="lazy" decoding="async" src="素材包/小艺.webp" alt="小意" style="width: 64px; height: 64px; object-fit: contain;">';
                 }
                 if (name) {
                     name.textContent = gameState.npcs.scene2.name;
@@ -5604,7 +5605,7 @@
         `;
         // 用图片替换emoji
         const qiqiImg = document.createElement('img');
-        qiqiImg.src = '素材包/小狗奇.png';
+        qiqiImg.src = '素材包/小狗奇.webp';
         qiqiImg.alt = '奇奇';
         qiqiImg.style.width = '64px';
         qiqiImg.style.height = '64px';
@@ -5775,7 +5776,7 @@
         // 根据场景设置不同的默认头像
         let defaultAvatar = '👨‍💻';
         if (gameState.currentScene === 2) {
-            defaultAvatar = '<img loading="lazy" decoding="async" src="素材包/小艺.png" alt="小意" style="width: 48px; height: 48px; object-fit: contain;">'; // 小意使用小艺.png图片
+            defaultAvatar = '<img loading="lazy" decoding="async" src="素材包/小艺.webp" alt="小意" style="width: 48px; height: 48px; object-fit: contain;">'; // 小意使用小艺.png图片
         } else if (gameState.currentScene === 3) {
             defaultAvatar = '🧙‍♂️'; // 时光老人使用神秘老者头像
         }
