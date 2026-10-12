@@ -1020,7 +1020,7 @@ const loadingManager = {
     ],
     
     // 显示加载页面
-    show(targetSceneId, duration = 2000) {
+    show(targetSceneId, duration = 2000, autoHide = true) {
         if (this.isShowing) return;
         
         console.log('🌸 显示场景加载页面，目标场景:', targetSceneId);
@@ -1050,9 +1050,9 @@ const loadingManager = {
         this.startProgress(duration);
         
         // 自动隐藏
-        setTimeout(() => {
-            this.hide();
-        }, duration);
+        if (autoHide) {
+            setTimeout(() => this.hide(), duration);
+        }
     },
     
     // 隐藏加载页面
@@ -1177,73 +1177,57 @@ const loadingManager = {
 
 // 场景管理
 const sceneManager = {
-    switchScene(sceneId) {
-        console.log(`准备切换到场景 ${sceneId}`);
-        audioManager.playClick();
-        
-        let loadingDuration = 1200;
-        if (sceneId === 1) loadingDuration = 1500;
-        if (sceneId === 3) loadingDuration = 1800;
-        if (sceneId === 4) loadingDuration = 1500;
-        if (sceneId === 5) loadingDuration = 1500;
-        
-        // 显示加载页面
-        loadingManager.show(sceneId, loadingDuration);
-        
-        // 清理动态创建的按钮
-        const dynamicButtons = document.querySelectorAll('#new-continue-btn, #final-scene-btn');
-        dynamicButtons.forEach(btn => btn.remove());
-        
-        // 智能切换场景和视频
-        const currentActiveScene = document.querySelector('.scene.active');
-        const currentVideo = currentActiveScene ? currentActiveScene.querySelector('.video-background') : null;
-        
-        // 隐藏所有场景
-        document.querySelectorAll('.scene').forEach(scene => {
-            scene.classList.remove('active');
-        });
-        
-        // 延迟切换场景，让加载页面先显示
-        setTimeout(() => {
-            // 根据场景播放对应的BGM
-            this.playSceneBGM(sceneId);
-            
-            // 显示新场景并智能切换视频
-            setTimeout(() => {
-                const targetScene = document.getElementById(`scene-${sceneId}`);
-                if (targetScene) {
-                    targetScene.classList.add('active');
-                    gameState.currentScene = sceneId;
-                    console.log(`场景 ${sceneId} 已激活`);
-                    
-                    // 使用智能视频切换
-                    const targetVideo = targetScene.querySelector('.video-background');
-                    if (targetVideo || currentVideo) {
-                        videoOptimizer.switchVideo(currentVideo, targetVideo);
-                    }
-                    
-                    // 检查关键元素是否存在
-                    if (sceneId === 1) {
-                        const catMentor = document.getElementById('cat-mentor');
-                        const dialogueBox = document.querySelector('.dialogue-box');
-                        console.log('猫导师存在:', !!catMentor);
-                        console.log('对话框存在:', !!dialogueBox);
-                        if (catMentor) {
-                            console.log('猫导师位置:', catMentor.getBoundingClientRect());
-                        }
-                    }
-                    
-                    // 场景特定的初始化
-                    if (sceneId === 5) {
-                        // 最终场景：清除所有氛围效果
-                        clearAllAtmosphereEffects();
-                    }
-                    this.initScene(sceneId);
-                } else {
-                    console.error(`找不到场景 scene-${sceneId}`);
-                }
-            }, 1000); // 给BGM一些时间开始播放，也让加载页面充分展示
-        }, 800); // 给加载页面更多时间显示美丽的动画
+    async switchScene(sceneId) {
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
+        const loadingDuration = ({ 1: 10000, 3: 12000, 4: 10000, 5: 11000 })[sceneId] || 9000;
+        const targetScene = document.getElementById(`scene-${sceneId}`);
+        if (!targetScene) {
+            this.isTransitioning = false;
+            return;
+        }
+        loadingManager.show(sceneId, loadingDuration, false);
+        vnSystem.cancelDialogue();
+        document.querySelectorAll('#new-continue-btn, #final-scene-btn').forEach(btn => btn.remove());
+        document.querySelectorAll('video').forEach(video => video.pause());
+        document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+
+        const video = targetScene.querySelector('.video-background');
+        const waitForVideo = video ? new Promise(resolve => {
+            if (video.readyState >= 3 || video.error) return resolve();
+            const ready = () => {
+                video.removeEventListener('canplay', ready);
+                video.removeEventListener('error', ready);
+                resolve();
+            };
+            video.addEventListener('canplay', ready);
+            video.addEventListener('error', ready);
+            video.preload = 'auto';
+            if (video.networkState === HTMLMediaElement.NETWORK_EMPTY) video.load();
+        }) : Promise.resolve();
+        const waitForImages = Promise.all(Array.from(targetScene.querySelectorAll('.cat-character')).map(image => {
+            image.loading = 'eager';
+            return image.decode().catch(() => {});
+        }));
+        await Promise.all([
+            new Promise(resolve => setTimeout(resolve, loadingDuration)),
+            waitForVideo,
+            waitForImages
+        ]);
+        targetScene.classList.add('active');
+        gameState.currentScene = sceneId;
+        if (video && !video.error) {
+            await video.play().then(() => new Promise(resolve => {
+                if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(resolve);
+                else requestAnimationFrame(() => requestAnimationFrame(resolve));
+            })).catch(() => {});
+        }
+        this.playSceneBGM(sceneId);
+        if (sceneId === 5) clearAllAtmosphereEffects();
+        this.initScene(sceneId);
+        if (sceneId === 1) vnSystem.initVNScene(1);
+        loadingManager.hide();
+        this.isTransitioning = false;
     },
     
     // 播放场景对应的BGM
@@ -1514,7 +1498,6 @@ const sceneManager = {
         
         // 使用视觉小说系统初始化场景4
         vnSystem.initVNScene(4);
-        vnSystem.startDialogue(4);
     },
     
     applyScene4Atmosphere(emotion) {
@@ -1790,11 +1773,6 @@ function startGame() {
     
     sceneManager.switchScene(1);
     
-    // 延迟启动视觉小说系统，让场景切换完成
-    setTimeout(() => {
-        console.log('🎭 延迟启动视觉小说系统');
-        vnSystem.initVNScene(1);
-    }, 1200); // 增加延迟时间，确保加载页面有足够时间展示
 }
 
 function makeChoice(scene, choice) {
@@ -2620,6 +2598,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 视觉小说系统
 const vnSystem = {
+    dialogueVersion: 0,
+    cancelDialogue() {
+        this.dialogueVersion++;
+        clearTimeout(this.typingTimer);
+        clearTimeout(this.dialogueTimer);
+        gameState.isTyping = false;
+    },
     // 初始化视觉小说场景
     initVNScene(sceneId = null) {
         const scene = sceneId || gameState.currentScene;
@@ -2692,6 +2677,9 @@ const vnSystem = {
     playDialogue(dialogue, scene = 1) {
         console.log('🎬 播放对话:', dialogue.speaker, dialogue.text.substring(0, 20) + '...');
         
+        this.cancelDialogue();
+        this.hideContinueHint(scene);
+        const version = this.dialogueVersion;
         const suffix = scene > 1 ? `-${scene}` : '';
         const nameBox = document.getElementById(`vn-name${suffix}`);
         const textContent = document.getElementById(`vn-text-content${suffix}`);
@@ -2703,7 +2691,8 @@ const vnSystem = {
             
             if (dialogue.showChoices) {
                 console.log('🔘 对话包含选择，准备显示选择按钮');
-                setTimeout(() => {
+                this.dialogueTimer = setTimeout(() => {
+                    if (version !== this.dialogueVersion) return;
                     this.showChoices(scene);
                     this.hideContinueHint(scene);
                     // 更新选择按钮文本
@@ -2715,7 +2704,8 @@ const vnSystem = {
             } else {
                 // 如果没有选择，显示继续提示
                 console.log('➡️ 显示继续提示');
-                setTimeout(() => {
+                this.dialogueTimer = setTimeout(() => {
+                    if (version !== this.dialogueVersion) return;
                     this.showContinueHint(scene);
                 }, dialogue.text.length * 30 + 500);
             }
@@ -2727,21 +2717,26 @@ const vnSystem = {
     // 打字机效果
     typeText(element, text, onComplete = null) {
         console.log('⌨️ 开始打字效果:', text.substring(0, 20) + '...');
+        clearTimeout(this.typingTimer);
+        const version = this.dialogueVersion;
         gameState.isTyping = true;
         element.textContent = '';
         let index = 0;
         
         const typeChar = () => {
+            if (version !== this.dialogueVersion) return;
             if (index < text.length) {
                 element.textContent += text.charAt(index);
                 index++;
-                setTimeout(typeChar, 25); // 稍微加快打字速度
+                this.typingTimer = setTimeout(typeChar, 25);
             } else {
                 console.log('✅ 打字效果完成');
                 gameState.isTyping = false;
                 // 文字显示完成后执行回调
                 if (onComplete && typeof onComplete === 'function') {
-                    setTimeout(onComplete, 300); // 稍微减少延迟
+                    this.typingTimer = setTimeout(() => {
+                        if (version === this.dialogueVersion) onComplete();
+                    }, 300);
                 }
             }
         };

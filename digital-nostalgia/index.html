@@ -2789,7 +2789,7 @@
                         type: "dialog"
                     },
                     {
-                        text: "每天的工作就是把人类那些\"无用的回忆\"塞进粉碎机——初恋短信、临终忏悔、猫主子丑照……",
+                        text: "每天，我把被标记为“无用”的回忆送进粉碎机。没发出去的短信、最后一次道别，还有主人舍不得删的猫照片。",
                         type: "dialog"
                     },
                     {
@@ -2820,7 +2820,7 @@
                         type: "dialog"
                     },
                     {
-                        text: "正在看第427遍《高效删除指南》时，耳机突然...",
+                        text: "正在翻看《高效删除指南》，耳机里突然传来一阵杂音。",
                         type: "dialog"
                     },
                     {
@@ -2973,7 +2973,7 @@
                         type: "dialog"
                     },
                     {
-                        text: "行，从今天起老子的职业病叫...怀旧。",
+                        text: "原来这些被淘汰的东西，还记得怎么让人难过。",
                         type: "dialog"
                     },
                     {
@@ -3162,8 +3162,22 @@
         });
     }
     
+    let prologueLoadTimer = null;
+    let prologueEntryTimer = null;
+    let prologueTipInterval = null;
+    let prologueSession = 0;
+    function cancelPrologueLoading() {
+        prologueSession++;
+        clearTimeout(prologueLoadTimer);
+        clearTimeout(prologueEntryTimer);
+        clearInterval(prologueTipInterval);
+        document.querySelectorAll('#loadingScreen, #cyberGlitch').forEach(element => element.remove());
+    }
+
     // 序幕剧情控制
     function startPrologue() {
+        cancelPrologueLoading();
+        clearPrologueEffects();
         showScene('prologueScene');
         prologueData.currentStep = 0;
         prologueData.currentDialog = 0;
@@ -3690,19 +3704,15 @@
                         }, 500);
                     };
                     
-                    // 每2秒切换一次提示
-                    const tipInterval = setInterval(showNextTip, 2000);
-                    showNextTip(); // 立即显示第一个提示
-                    
-                    // 清理定时器
-                    setTimeout(() => {
-                        clearInterval(tipInterval);
-                    }, 8000);
-                    
-                    // 8秒后自动进入游戏
-                    setTimeout(() => {
+                    const session = prologueSession;
+                    prologueTipInterval = setInterval(showNextTip, 2000);
+                    showNextTip();
+                    prologueLoadTimer = setTimeout(() => {
+                        if (session !== prologueSession || !scene.classList.contains('active')) return;
+                        clearInterval(prologueTipInterval);
                         showSceneFade('场景一：效率中枢', '数据处理的神经中枢');
-                        setTimeout(() => {
+                        prologueEntryTimer = setTimeout(() => {
+                            if (session !== prologueSession || !scene.classList.contains('active')) return;
                             showScene('gameScene');
                             resetGame();
                         }, 1500);
@@ -3810,6 +3820,7 @@
     
     // 场景切换
     function showScene(sceneId) {
+        if (sceneId !== 'prologueScene') cancelPrologueLoading();
         console.log('=== 切换场景 ===', sceneId);
         
         // 隐藏所有场景
