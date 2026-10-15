@@ -3054,7 +3054,7 @@
             line('未经许可进入隔离区，将撤销操作员资格。关闭本地控制台不会中止远程销毁；未保存索引可能丢失。', 'system'),
             line('也就是说，拔电源只能解决我眼前的问题。解决不了真正的问题。'),
             line('……难怪这个办法一直这么受欢迎。', 'dialog', { choices: [
-                { text: '保存索引，用临时权限进入隔离区。', action: 'keepTape' },
+                { text: '保存索引，用临时权限进入隔离区。', action: 'enterArchive' },
                 { text: '不保存，直接拔掉控制台电源。', action: 'powerOff' }
             ] })
         ]),
@@ -3516,7 +3516,7 @@
                 break;
             case 'reportFault':
                 prologueData.reported = true;
-                prologueData.currentStep = 3;
+                prologueData.currentStep = 4; // 进入磁带信息场景
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
@@ -3528,7 +3528,7 @@
                 break;
             case 'tapeRust':
                 prologueData.rustLevel += 10;
-                prologueData.currentStep = 3; // 跳到磁带信息场景
+                prologueData.currentStep = 4; // 进入磁带信息场景
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
@@ -3538,6 +3538,12 @@
                 break;
             case 'finalChoice':
                 prologueData.currentStep = 4;
+                prologueData.currentDialog = 0;
+                showNextDialog();
+                break;
+            case 'enterArchive':
+                prologueData.hasTape = true;
+                prologueData.currentStep = 6;
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
@@ -6758,6 +6764,8 @@
         // 终幕剧情中的回车键处理
         if (document.getElementById('epilogueScene').classList.contains('active')) {
             if (e.key === 'Enter') {
+                const choiceModal = document.getElementById('epilogueChoiceModal');
+                if (choiceModal.style.display !== 'none') return;
                 epilogueData.currentDialog++;
                 showNextEpilogueDialog();
             }
@@ -6963,29 +6971,65 @@
         console.log('金句行数:', lines.length);
         console.log('容器样式:', window.getComputedStyle(tributeQuote));
 
-        // 切换到简化样式
         tributeQuote.className = 'tribute-quote-simple';
-
-        // 强制显示每一行
         lines.forEach((line, index) => {
             console.log(`行${index + 1}:`, line.textContent);
             console.log(`行${index + 1}样式:`, window.getComputedStyle(line));
-
-            // 强制设置可见
             line.style.opacity = '1';
             line.style.transform = 'translateY(0)';
-            line.style.color = '#e2e8f0 !important';
-            line.style.background = 'none !important';
+            line.style.color = '#e2e8f0';
+            line.style.background = 'none';
             line.style.animation = 'none';
         });
 
-        // 强制显示容器
-        tributeQuote.style.opacity = '1 !important';
-        tributeQuote.style.color = '#e2e8f0 !important';
-        tributeQuote.style.background = 'none !important';
-
+        tributeQuote.style.opacity = '1';
+        tributeQuote.style.color = '#e2e8f0';
+        tributeQuote.style.background = 'none';
         console.log('金句强制显示完成 - 使用简化样式');
     };
+
+    // Shared scene/navigation helpers used by the story and inline controls.
+    function showScene(sceneId) {
+        document.querySelectorAll('.scene').forEach(scene => scene.classList.remove('active'));
+        const scene = document.getElementById(sceneId);
+        if (!scene) {
+            console.warn(`Scene not found: ${sceneId}`);
+            return false;
+        }
+        scene.classList.add('active');
+        return true;
+    }
+
+    function showSceneFade(title, subtitle) {
+        const overlay = document.createElement('div');
+        overlay.className = 'scene-transition-overlay';
+        overlay.innerHTML = `<strong>${title}</strong><span>${subtitle}</span>`;
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('visible'));
+        setTimeout(() => {
+            overlay.classList.remove('visible');
+            setTimeout(() => overlay.remove(), 350);
+        }, 1500);
+    }
+
+    function continueToNextScene() {
+        if (gameState.currentScene === 1) {
+            switchToScene2();
+        } else if (gameState.currentScene === 2) {
+            switchToScene3();
+        } else {
+            startEpilogue();
+        }
+    }
+
+    function toggleDevPanelDirect() {
+        const panel = document.getElementById('devPanel');
+        const button = document.getElementById('devModeToggle');
+        if (!panel || !button) return;
+        const isHidden = panel.style.display === 'none' || panel.style.display === '';
+        panel.style.display = isHidden ? 'block' : 'none';
+        button.classList.toggle('active', isHidden);
+    }
     </script>
 </body>
 </html>
