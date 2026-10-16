@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网页游戏作品集</title>
+    <title>拾光集 · 曾艺的互动叙事作品</title>
     <style>
         :root {
             --bg: #0d1117;
@@ -22,18 +22,20 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 48px 20px 64px;
+            padding: 48px 20px 40px;
         }
-        h1 { font-size: 2rem; letter-spacing: 0.08em; margin-bottom: 8px; }
+        h1 { font-size: 2rem; letter-spacing: 0.12em; margin-bottom: 8px; }
         .subtitle { color: var(--muted); margin-bottom: 40px; }
         .games {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1.25fr 1fr;
             gap: 24px;
-            width: min(860px, 100%);
+            width: min(900px, 100%);
         }
+        @media (max-width: 720px) { .games { grid-template-columns: 1fr; } }
         a.card {
-            display: block;
+            display: flex;
+            flex-direction: column;
             background: var(--card);
             border: 1px solid #30363d;
             border-radius: 16px;
@@ -45,8 +47,9 @@
         a.card:hover { transform: translateY(-6px); }
         .card.cat:hover { border-color: var(--pink); }
         .card.nostalgia:hover { border-color: var(--cyan); }
+        .card.nostalgia { border-width: 2px; border-color: #1f4a5f; }
         .tag {
-            display: inline-block;
+            align-self: flex-start;
             font-size: 12px;
             padding: 4px 10px;
             border-radius: 999px;
@@ -55,30 +58,33 @@
         .cat .tag { background: rgba(255, 143, 171, 0.15); color: var(--pink); }
         .nostalgia .tag { background: rgba(125, 211, 252, 0.15); color: var(--cyan); }
         h2 { font-size: 1.4rem; margin-bottom: 10px; }
-        p { color: var(--muted); line-height: 1.6; font-size: 0.95rem; }
+        p { color: var(--muted); line-height: 1.6; font-size: 0.95rem; flex: 1; }
         .play { margin-top: 18px; font-weight: 700; }
         .cat .play { color: var(--pink); }
         .nostalgia .play { color: var(--cyan); }
-        footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
+        footer { margin-top: 48px; color: var(--muted); font-size: 13px; text-align: center; }
+        footer .author { color: var(--text); font-weight: 700; letter-spacing: 0.2em; }
     </style>
 </head>
 <body>
-    <h1>网页游戏作品</h1>
-    <p class="subtitle">点击卡片即可在线游玩 · 建议使用 Chrome / Edge</p>
+    <h1>拾光集</h1>
+    <p class="subtitle">互动叙事作品 · 点击卡片在线游玩 · 建议使用 Chrome / Edge</p>
     <div class="games">
+        <a class="card nostalgia" href="digital-nostalgia/index.html">
+            <span class="tag">主推 · 收集冒险</span>
+            <h2>记忆碎片：数字乡愁</h2>
+            <p>2099 年的记忆焚化师在数据坟场中，收集旧时代的记忆碎片，找回一段属于自己的生日录音。方向键或 WASD 移动角色，完成小游戏并推进剧情。</p>
+            <div class="play">进入游戏 →</div>
+        </a>
         <a class="card cat" href="xinyu-miaowu/index.html">
             <span class="tag">治愈互动</span>
             <h2>心语喵屋</h2>
             <p>与猫导师对话、整理小情绪，在探索中收集心灵碎片，最终生成一只专属的心灵伙伴小猫。</p>
             <div class="play">进入游戏 →</div>
         </a>
-        <a class="card nostalgia" href="digital-nostalgia/《记忆碎片：数字乡愁》.html">
-            <span class="tag">收集冒险</span>
-            <h2>记忆碎片：数字乡愁</h2>
-            <p>在数字世界中收集记忆碎片。可用方向键或 WASD 移动角色，完成小游戏并推进剧情。</p>
-            <div class="play">进入游戏 →</div>
-        </a>
     </div>
-    <footer>作品仅供作品集展示，建议在电脑端打开以获得完整体验。</footer>
+    <footer>
+        <span class="author">曾艺</span> 的互动叙事作品集 · 建议在电脑端打开以获得完整体验
+    </footer>
 </body>
 </html>

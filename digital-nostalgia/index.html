@@ -508,6 +508,29 @@
             animation: subtitleFadeIn 1s ease-out 0.8s both;
         }
 
+        .scene-fade-text {
+            max-width: min(92vw, 900px);
+            padding: 0 24px;
+            box-sizing: border-box;
+            overflow-wrap: anywhere;
+        }
+
+        .scene-fade-subtitle {
+            max-width: min(90vw, 680px);
+            padding: 0 24px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .scene-fade .cyber-grid,
+        .scene-fade .cyber-particles,
+        .scene-fade .scene-fade-text,
+        .scene-fade .scene-fade-subtitle { position: relative; z-index: 1; }
+
+        .scene-fade .scene-fade-text,
+        .scene-fade .scene-fade-subtitle { left: auto; right: auto; transform: none; }
+
         /* 赛博朋克浮动特效 */
         .cyber-particles {
             position: absolute;
@@ -6998,18 +7021,6 @@
         }
         scene.classList.add('active');
         return true;
-    }
-
-    function showSceneFade(title, subtitle) {
-        const overlay = document.createElement('div');
-        overlay.className = 'scene-transition-overlay';
-        overlay.innerHTML = `<strong>${title}</strong><span>${subtitle}</span>`;
-        document.body.appendChild(overlay);
-        requestAnimationFrame(() => overlay.classList.add('visible'));
-        setTimeout(() => {
-            overlay.classList.remove('visible');
-            setTimeout(() => overlay.remove(), 350);
-        }, 1500);
     }
 
     function continueToNextScene() {
