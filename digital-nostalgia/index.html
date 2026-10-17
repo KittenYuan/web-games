@@ -495,7 +495,7 @@
             text-align: center;
             text-shadow: 0 0 15px #7dd3fc;
             margin-bottom: 20px;
-            animation: textGlow 2s ease-in-out infinite, textBounce 0.8s ease-out 0.5s both, textFadeIn 1s ease-out 0.3s both;
+            animation: textGlow 2s ease-in-out infinite, fadeIn 1s ease-out 0.3s both;
         }
 
         .scene-fade-subtitle {
@@ -513,6 +513,7 @@
             padding: 0 24px;
             box-sizing: border-box;
             overflow-wrap: anywhere;
+            animation: textGlow 2s ease-in-out infinite, fadeIn 1s ease-out 0.3s both;
         }
 
         .scene-fade-subtitle {
@@ -521,6 +522,7 @@
             box-sizing: border-box;
             text-align: center;
             overflow-wrap: anywhere;
+            animation: subtitleFadeIn 1s ease-out 0.8s both;
         }
 
         .scene-fade .cyber-grid,
@@ -529,7 +531,7 @@
         .scene-fade .scene-fade-subtitle { position: relative; z-index: 1; }
 
         .scene-fade .scene-fade-text,
-        .scene-fade .scene-fade-subtitle { left: auto; right: auto; transform: none; }
+        .scene-fade .scene-fade-subtitle { left: auto; right: auto; }
 
         /* 赛博朋克浮动特效 */
         .cyber-particles {
@@ -563,6 +565,11 @@
             background-size: 50px 50px;
             animation: gridMove 4s linear infinite;
             opacity: 0.3;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         @keyframes textGlow {
@@ -3026,57 +3033,58 @@
     const memoryScene = (name, dialogs, extra = {}) => ({ name, dialogs, ...extra });
     prologueData.scenes = [
         memoryScene('opening', [
-            line('2099年。新元界将私人记忆按照访问频率分类。长期无人访问的记录，将被送入隔离区，等待销毁。', 'system'),
-            line('记忆焚化师，夜班。一份听起来就很适合睡觉的工作。'),
-            line('我是零，注册编号137-Zero。培训时，他们清除了我的私人记忆。理由是：操作员不该对待待销毁记忆产生感情。'),
-            line('放心。我对这份工作的感情，主要是厌烦。应该不算私人情感。'),
-            line('三千四百二十一条。很好，今晚又是和死文件相亲的一晚。'),
+            line('2099年，凌晨02:13。新元界将私人记忆按照访问频率分类。长期无人访问的记录，会被送入隔离区，等待销毁。', 'system'),
+            line('我叫零，注册编号137-Zero。职位：记忆焚化师。夜班的好处是没人和你说话，坏处是你会开始和文件说话。'),
+            line('今晚的第一批任务，是清理三千四百二十一条“低价值记忆”。系统给出的理由只有四个字：无人需要。'),
+            line('我打开第一份文件。没有标题，只有一段手写备注：请先确认，这不是误删。'),
+            line('我本来应该直接按下确认键。可这份记录在被送进销毁队列前，曾被三个不同部门反复退回。'),
+            line('这不是普通的积压文件。至少，在我替它消失之前，我想知道它到底被谁判定成了“无用”。'),
             line('提醒：操作员不得对待处理记忆产生私人情感。', 'system', { choices: [
-                { text: '先看一眼文件备注，再确认销毁。', action: 'sentimental' },
-                { text: '先检查处理记录，确认有没有误删。', action: 'cynical' }
+                { text: '打开处理记录，先查清三次退回的原因。', action: 'sentimental' },
+                { text: '保留审计索引，按流程申请人工复核。', action: 'cynical' }
             ] })
         ], { effects: ['employeeCard'] }),
         memoryScene('daily_routine', [
-            line('下一条记录：无标题私人文本。访问频率：0。建议处理：立即销毁。', 'system'),
-            line('无标题，零访问，建议销毁。这套系统判断人生的方式，和我的主管判断员工价值的方式还挺像。'),
-            line('我知道工作守则是“不要多管闲事”。但它没说，按删除之前不能先看一眼备注。'),
-            line('如果这份东西真的无关紧要，处理记录应该很干净。不干净就说明有人连垃圾分类也做砸了。'),
-            line('文件曾在三个隔离队列之间转移，原始登记备注缺失。', 'system'),
-            line('先把索引留着。没有备注和记录的文件，别急着替它下结论。', 'dialog', { choices: [
-                { text: '继续查看异常记录', action: 'hitHeadphone' },
-                { text: '按流程上报异常', action: 'reportFault' }
+            line('审计记录加载中……第一次退回：原始备注缺失。第二次退回：关联人信息冲突。第三次退回：访问权限被人为撤销。', 'system'),
+            line('三个隔离队列，三个不同的时间戳。有人一直在把它往更深处推，却没有留下自己的名字。'),
+            line('我把文件放回待处理区，准备上报异常。就在这时，自动删除倒计时提前了十分钟。'),
+            line('倒计时：00:09:58。系统建议：停止查看，立即确认。'),
+            line('耳机里传来一阵不属于控制台的杂音。像有人隔着很远的地方，正在尝试接通这台机器。', 'system', { effects: ['staticNoise'] }),
+            line('我得先弄清楚这段信号从哪里来。', 'dialog', { choices: [
+                { text: '截取信号，暂停删除倒计时。', action: 'hitHeadphone' },
+                { text: '把异常和审计记录一起上报，等待人工接管。', action: 'reportFault' }
             ] })
         ]),
         memoryScene('unused_service', []),
         memoryScene('tape_discovery', [
-            line('队列发现未登记音频。文件格式：卡式录音带转录。录制年份：2078年。接收者：小零。', 'system'),
-            line('……小零？我不叫小零。我叫137-Zero。'),
-            line('……至少系统里是这么写的。'),
-            line('祝你生日快乐……', 'message'),
-            line('这不是背景音乐。有人在唱。'),
-            line('她唱错了。……为什么我知道她下一句会笑？'),
-            line('算了，可能是夜班综合征。症状包括幻听、怀旧，以及想把主管的服务器拔掉。'),
-            line('但在拔服务器之前，我先把这盘磁带留下。', 'dialog', { choices: [
-                { text: '上报格式异常，争取人工复核。', action: 'reportFault' },
-                { text: '暂停自动删除，核对“小零”的身份。', action: 'tapeRust' },
+            line('信号被截取。来源：隔离区 03。格式：卡式录音带转录。录制年份：2078年。接收者：小零。', 'system'),
+            line('……小零？我不叫小零。我叫137-Zero。至少，系统里是这么写的。'),
+            line('录音自动播放：祝你生日快乐……', 'message'),
+            line('她唱错了一个音，然后笑了。我知道下一句会怎么接。不是因为识别算法，是因为我真的听过。'),
+            line('控制台弹出警告：检测到私人关联记忆。关联对象：操作员137-Zero。关联记忆状态：已清除。', 'system', { effects: ['systemAlert'] }),
+            line('所以这盘磁带不是从外面闯进来的。它是从我的记忆里，被系统删掉以后，掉进了隔离区。'),
+            line('自动删除倒计时还剩六分钟。', 'dialog', { choices: [
+                { text: '暂停自动删除，先核对“小零”的身份和清除记录。', action: 'tapeRust' },
+                { text: '上报私人关联，申请人工复核并保留证据。', action: 'reportFault' },
                 { text: '确认永久销毁这份录音。', action: 'finalDelete' }
             ] })
         ], { effects: ['birthdaySong'] }),
         memoryScene('tape_message', [
             line('磁带标签：给小零的十岁生日。妈妈录。', 'message'),
-            line('妈妈？……我有妈妈？这个问题听起来很蠢。当然应该有。可我完全想不起她的脸。'),
+            line('妈妈？我完全想不起她的脸。可这段录音里的停顿，我的身体比我的记忆更早认出来了。'),
             line('私人关联记忆：已清除。清除时间：2097年。原主授权：无记录。', 'system'),
-            line('翻译一下就是：“我们删了，但没有人承认是自己批准的。”'),
-            line('太晚了。我现在已经产生了非常职业的判断：这件事很可疑。'),
-            line('关联记忆被分存在三个隔离区。', 'system', { choices: [
-                { text: '复制复核权限，进入隔离区。', action: 'keepTape' },
-                { text: '保留索引，核对它为什么被标记为无用。', action: 'keepTape' }
+            line('翻译一下就是：有人删掉了我的过去，但没有人愿意承认批准过这次删除。'),
+            line('系统重新扫描出三个关联记录：生日、家庭住址、以及一段未完成的留言。它们都在隔离区，且将在六分钟后一起销毁。', 'system'),
+            line('现在我知道为什么要进去，也知道进去会失去什么。隔离区不是冒险地图，是我找回自己之前，系统留下的最后一份证据。'),
+            line('进入需要临时复核权限。权限会记录我的编号，并可能撤销操作资格；不进去，三个关联记录会在倒计时结束后永久消失。', 'system', { choices: [
+                { text: '复制临时复核权限，进入隔离区保存关联记录。', action: 'keepTape' },
+                { text: '只保留审计索引，先查清授权缺失的原因。', action: 'keepTape' }
             ] })
         ]),
         memoryScene('final_choice', [
-            line('未经许可进入隔离区，将撤销操作员资格。关闭本地控制台不会中止远程销毁；未保存索引可能丢失。', 'system'),
-            line('也就是说，拔电源只能解决我眼前的问题。解决不了真正的问题。'),
-            line('……难怪这个办法一直这么受欢迎。', 'dialog', { choices: [
+            line('复核索引显示：这不是一次误删，而是一批被系统自动归类的私人记忆。你的生日记录只是其中一份。', 'system'),
+            line('未经许可进入隔离区，将撤销操作员资格。关闭本地控制台不会中止远程销毁；未保存索引可能丢失。'),
+            line('我可以继续装作没看见，也可以把自己的编号写进这份记录。至少这一次，后果应该由我自己选择。', 'dialog', { choices: [
                 { text: '保存索引，用临时权限进入隔离区。', action: 'enterArchive' },
                 { text: '不保存，直接拔掉控制台电源。', action: 'powerOff' }
             ] })
@@ -3533,13 +3541,13 @@
                 showNextDialog();
                 break;
             case 'hitHeadphone':
-                prologueData.currentStep = 2; // 跳到生日磁带场景
+                prologueData.currentStep = 3; // 进入磁带发现阶段
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
             case 'reportFault':
                 prologueData.reported = true;
-                prologueData.currentStep = 4; // 进入磁带信息场景
+                prologueData.currentStep = 3; // 进入磁带发现阶段
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
@@ -3551,7 +3559,7 @@
                 break;
             case 'tapeRust':
                 prologueData.rustLevel += 10;
-                prologueData.currentStep = 4; // 进入磁带信息场景
+                prologueData.currentStep = 4;
                 prologueData.currentDialog = 0;
                 showNextDialog();
                 break;
