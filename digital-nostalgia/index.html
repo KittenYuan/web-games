@@ -533,6 +533,27 @@
         .scene-fade .scene-fade-text,
         .scene-fade .scene-fade-subtitle { left: auto; right: auto; }
 
+        .scene-fade > div:last-child {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: min(92vw, 900px);
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .scene-fade > div:last-child .scene-fade-text,
+        .scene-fade > div:last-child .scene-fade-subtitle {
+            position: static;
+            left: auto;
+            right: auto;
+            transform: none;
+        }
+
         /* 赛博朋克浮动特效 */
         .cyber-particles {
             position: absolute;
@@ -606,11 +627,9 @@
         @keyframes subtitleFadeIn {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
             }
             100% {
                 opacity: 0.8;
-                transform: translateY(0);
             }
         }
 
